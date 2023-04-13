@@ -11,6 +11,7 @@
     "axios": "^1.3.4",
     "babel": "^6.23.0",
     "bootstrap": "^5.2.3",
+    "bootstrap-select": "^1.13.18",
     "idle-vue": "^2.0.5",
     "popper.js": "^1.16.1",
     "vue": "^3.2.47",

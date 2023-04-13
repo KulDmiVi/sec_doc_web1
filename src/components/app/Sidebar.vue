@@ -65,7 +65,9 @@ export default {
      org_links: [
        {title: 'Реквизиты', url: '/organisation', exact: true },
        {title: 'Подразделения', url: '/departments' },
-       {title: 'Сотрудники', url: '/employee' },
+       {title: 'Сотрудники', url: '/employees' },
+       {title: 'Должности', url: '/posts' },
+       {title: 'Помещения', url: '/rooms' },
      ]
     })
   }

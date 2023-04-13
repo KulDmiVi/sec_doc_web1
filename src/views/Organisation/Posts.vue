@@ -1,60 +1,51 @@
 <template>
-
-
-  <div>
-    <h1>Подразделения</h1>
-    <DepartmentForms ref = 'DepartmentForm' v-bind:uid="departmentUID"  v-show="isInfoPopupVisible"/>
-
+   <h1>Должности</h1>
     <TableEditor
         v-if="isRequest"
         v-bind:fields="fields"
-        v-bind:items="departments"
-        v-bind:enableEditForm="enableEditForm"
-        @addRow="addDepartment"
+        v-bind:items="posts"
+        @addRow="addPost"
     />
-
-  </div>
 </template>
 
 <script>
 import TableEditor from '@/components/VueEditortable.vue'
 import OrganisationService from "@/services/organisation.service";
 import EventBus from "@/common/EventBus";
-import DepartmentForms from "@/views/Organisation/Department.vue";
+
 
 
 
 export default {
-  name: "departments",
-
+  name: "departmens",
   data() {
     return {
-      isAdded: false,
-      isInfoPopupVisible: false,
-      enableEditForm: false,
-      isRequest: false,
-      departments: [],
-      departmentUID: '',
       fields: [
-        { key: "name", label: "Наименование", class: 'form-control', type: 'text', teg: 'input' },
-        { key: "is_branch", label: "Филиал", class: 'form-check-input', type: 'checkbox', teg: 'input'},
-        { key: "KPP", label: "КПП", class: 'form-control', type: 'text', teg: 'input'},
-        { key: "address", label: "Адрес", class: 'form-control', type: 'text', teg: 'input'},
+        {key: "post",
+          label: "Наименование",
+          class: 'form-control',
+          type: 'text',
+          teg: 'input',
+          list: 'rbPost',
+          datalist: ['test1', 'test2']
+
+        },
       ],
+      posts: [],
+      isRequest: false,
     };
   },
 
-
   components: {
     TableEditor,
-    DepartmentForms
   },
 
   methods: {
-    addDepartment(data){
+    addPost(data){
       let current_user = JSON.parse(localStorage.getItem("user"))
+      console.log(current_user.organisation)
       data['organisation'] = current_user.organisation
-      OrganisationService.postDepartment(data).then(
+      OrganisationService.postPost(data).then(
           (response) => {
             this.request = response.data;
           },
@@ -75,19 +66,25 @@ export default {
 
   created(){
     let user = JSON.parse(localStorage.getItem("user"))
-    OrganisationService.getDepartments(user.organisation).then(
+    OrganisationService.getPosts(user.organisation).then(
         (response) => {
-          this.departments = response.data;
+          this.posts = response.data;
           this.isRequest=true
         },
         (error) => {
-          this.departments =
-              (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+          this.getPosts =
+              (error.response &&
+                  error.response.data &&
+                  error.response.data.message) ||
+              error.message ||
+              error.toString();
+
           if (error.response && error.response.status === 403) {
             EventBus.dispatch("logout");
           }
         }
     );
+
   },
 }
 </script>

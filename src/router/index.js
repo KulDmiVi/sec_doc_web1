@@ -21,18 +21,29 @@ const routes = [
     component: () => import('../views/Organisation/Organisation.vue')
   },
   {
+    path: '/posts/',
+    name: 'posts',
+    meta: {layout: 'main', auth: true},
+    component: () => import('../views/Organisation/Posts.vue')
+  },
+  {
     path: '/departments',
     name: 'departments',
     meta: {layout: 'main', auth: true},
     component: () => import('../views/Organisation/Departments.vue')
   },
   {
-    path: '/employee',
-    name: 'employee',
+    path: '/employees',
+    name: 'employees',
     meta: {layout: 'main', auth: true},
-    component: () => import('../views/Organisation/Employee.vue')
+    component: () => import('../views/Organisation/Employees.vue')
   },
-
+  {
+    path: '/rooms',
+    name: 'rooms',
+    meta: {layout: 'main', auth: true},
+    component: () => import('../views/Organisation/Rooms.vue')
+  },
 ]
 
 const router = createRouter({

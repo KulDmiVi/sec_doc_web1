@@ -4,7 +4,7 @@
     <div class="row flex-nowrap">
         <Sidebar/>
       <main class="app-content">
-        <div class="col py-3">
+        <div>
           <router-view/>
         </div>
      </main>

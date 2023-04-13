@@ -3,41 +3,63 @@ import api from './api';
 class OrganisationService {
   getOrganisations() {
     return api.get('/registrators/me/organisations/');
-  }
+  };
+
+  getOrganisation(uid) {
+      return api.get('/organisations/'+uid);
+  };
+
 
   patchOrganisation(uid, organisation) {
     return api.patch(
         '/organisations/'+uid+'/',
         organisation
   );
+  };
 
-  }
-  getOrganisation(uid) {
-        return api.get('/organisations/'+uid);
-    }
+  getDepartments(uid) {
 
-    getDepartments(uid) {
         return api.get('/organisations/'+uid+'/departments/');
-    }
-  getEmployees(uid) {
-    console.log('testtt')
-    console.log(uid)
-     return api.get('/organisations/'+uid+'/employees/');
-  }
+  };
+  postDepartment(data){
+        return api.post('/departments/', data);
+    };
 
-  postEmployee(){
-    api.post('/organisations/employees/',
-        {
-          "organisation": "62064727-e751-4a9b-9eda-a5045819a2ea",
-          "department": null,
-          "post": "eb962bce-b7cb-4a95-806a-2c13bcf84b13",
-          "surname": "теест",
-          "name": "теест",
-          "теест": "Житомирович",
-          "email": "s.pushkarev@itnov.ru",
-          "phone": "1234346425" }
-    )
+
+    patchDepartment(department) {
+        return api.patch(
+            '/departments/'+department['id']+'/',
+                 department
+        );
   }
+  getDepartment(org_uid, dep_uid) {
+        return api.get('/organisations/'+org_uid+'/departments/'+dep_uid+'/');
+  };
+
+  getPosts(uid) {
+     return api.get('/organisations/'+uid+'/posts/');
+  };
+
+  postPost(data) {
+      return api.post('/posts/', data);
+  };
+
+  getEmployees(uid) {
+        return api.get('/organisations/'+uid+'/employees/');
+  };
+
+
+  getRooms(uid){
+      return api.get('/organisations/'+uid+'/rooms/');
+  };
+
+  postRoom(uid, data){
+      return api.post('/organisations/'+uid+'/rooms/', data);
+  };
+
+  postEmployee(data){
+    api.post('/employees/', data)
+  };
 
   //
   // getUserBoard() {
