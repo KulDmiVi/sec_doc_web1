@@ -17,22 +17,21 @@
     <tr v-for="(item, item_index) in this.table_items">
       <td v-for="field in fields">
 
-        <input v-if="item['isEdit'] && field['teg']==='input'" :class="field.class" :type="field.type" v-model="item[field.key]"  :list = "field['list']">
-          <datalist :id="field['list']">
-            <option v-for="value in field['datalist']" :value="value"></option>
-          </datalist>
+        <input v-if="item['isEdit'] && field['teg']==='input' &&  field['list']" :class="field.class" :type="field.type" v-model="item[field.key]"  :list = "field['list']">
+        <datalist v-if="item['isEdit'] && field['teg']==='input' &&  field['list']"  :id="field['list']">
+          <option class="form-control" v-for="value in field['datalist']" :value="value"></option>
+        </datalist>
 
+        <input v-else-if ="item['isEdit'] && field['teg']==='input' " :class="field.class" :type="field.type" v-model="item[field.key]">
 
-        <select   v-else-if="item['isEdit'] && field['teg']==='select'" class="form-select"  v-model="item[field.key]">
+        <select v-else-if="item['isEdit'] && field['teg']==='select'" class="form-select"  v-model="item[field.key]">
           <option v-for = 'option in field.options' v-bind:value="option.id" >{{option.name}}</option>
         </select>
 
         <span v-else :enabled = "!item['isEdit'] " >{{item[field.key]}}</span>
-
       </td>
-      <td>
 
-      </td>
+      <td></td>
       <td id="action">
         <button :class="item['btnClass']"  @click="editRowHandler(item_index)">
           <span v-if="!item['isEdit']">Редактировать</span>
