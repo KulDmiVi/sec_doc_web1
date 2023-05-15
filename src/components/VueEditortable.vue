@@ -1,10 +1,8 @@
 <template>
 
   <div>
-    <button class="btn btn-primary" @click="add_row">Добавить</button>
+    <button class="btn btn-primary" @click="addRow">Добавить</button>
     <div class="col-md-10 order-md-1">
-
-
       <table class="table table-striped">
     <thead>
 
@@ -16,7 +14,6 @@
     <tbody v-if="this.table_items">
     <tr v-for="(item, item_index) in this.table_items">
       <td v-for="field in fields">
-
         <input v-if="item['isEdit'] && field['teg']==='input' &&  field['list']" :class="field.class" :type="field.type" v-model="item[field.key]"  :list = "field['list']">
         <datalist v-if="item['isEdit'] && field['teg']==='input' &&  field['list']"  :id="field['list']">
           <option class="form-control" v-for="value in field['datalist']" :value="value"></option>
@@ -31,12 +28,25 @@
         <span v-else :enabled = "!item['isEdit'] " >{{item[field.key]}}</span>
       </td>
 
-      <td></td>
-      <td id="action">
-        <button :class="item['btnClass']"  @click="editRowHandler(item_index)">
-          <span v-if="!item['isEdit']">Редактировать</span>
-          <span v-else>Сохранить</span>
+
+      <td id="action" align="right">
+
+        <button v-if="item['showUpdateButton']" style="border:none;"  @click="updateRow(item_index)">
+          <img src="./icons/2931176_diskette_disk_usb_drive_guardar_save_floppy.svg" alt="Сохранить"  width="20" height="20">
         </button>
+
+        <button v-if="item['showAddButton']" style="border:none;"  @click="saveRow(item_index)">
+          <img src="./icons/2931176_diskette_disk_usb_drive_guardar_save_floppy.svg" alt="Сохранить"  width="20" height="20">
+        </button>
+
+        <button v-if="item['showEditButton']"  style="border:none;" @click="editeRow(item_index)">
+          <img src="./icons/2931178_creative_edit_pencil_change_draw_design_pen.svg" alt="Редактировать"  width="20" height="20">
+        </button>
+
+        <button v-if="item['showDeleteButton']"  style="border:none;"  @click="deleteRow(item_index)">
+          <img src="./icons/2931168_garbage_trash_bin_delete_remove.svg" alt="Удалить"  width="20" height="20" >
+        </button>
+
       </td>
     </tr>
     </tbody>
@@ -67,48 +77,63 @@ export default {
 
 
   methods: {
-    editRowHandler(item_index) {
+    editeRow(item_index) {
       if (this.enableEditForm){
         this.$emit("showForm", this.items[item_index].id)
       }
       else {
-        this.table_items[item_index].isEdit = !this.table_items[item_index].isEdit;
-        if (this.table_items[item_index].isEdit) {
-          this.table_items.map(item => item['btnClass'] = "btn btn-primary disabled");
-          this.table_items[item_index].btnClass = "btn btn-primary"
-        } else {
-          this.table_items.map(item => item['btnClass'] = "btn btn-primary");
-          if(!this.isAdded) {
-            this.$emit("patchData", this.table_items[item_index])
-          }else{
-            let row_data = {}
-            let index = ''
-            for(index in this.fields){
-              row_data[this.fields[index]['key']] = this.table_items[item_index][this.fields[index]['key']]
-            }
-            console.log(this.fields)
-            console.log(this.table_items)
-           this.$emit("addRow", row_data)
-           this.isAdded = false
-          }
-        }
+        this.table_items[item_index].showAddButton = false
+        this.table_items[item_index].showUpdateButton = true
+        this.table_items[item_index].showEditButton = false
+        this.table_items[item_index].showDeleteButton = true
+        this.table_items[item_index].isEdit = !this.table_items[item_index].isEdit
       }
     },
 
-    add_row() {
-      this.isAdded = true
-      this.table_items.push(JSON.parse(JSON.stringify(this.empty_record)));
-    }
+    updateRow(item_index) {
+      this.table_items[item_index].isEdit = !this.table_items[item_index].isEdit
+      this.table_items[item_index].showAddButton = false
+      this.table_items[item_index].showUpdateButton = false
+      this.table_items[item_index].showEditButton = true
+      this.table_items[item_index].showDeleteButton = true
+      this.$emit("updateRow",  this.table_items[item_index])
+    },
 
+    addRow() {
+      let row_number = this.table_items.push(JSON.parse(JSON.stringify(this.empty_record)));
+      this.table_items[row_number-1].showAddButton = true
+      this.table_items[row_number-1].showUpdateButton = false
+      this.table_items[row_number-1].showEditButton = false
+      this.table_items[row_number-1].showDeleteButton = true
+      this.table_items[row_number-1].isEdit = true
+    },
+
+    saveRow(item_index) {
+      this.table_items[item_index].isEdit = false
+      this.table_items[item_index].showAddButton = false
+      this.table_items[item_index].showUpdateButton = false
+      this.table_items[item_index].showEditButton = true
+      this.table_items[item_index].showDeleteButton = true
+      this.$emit("saveRow", this.table_items[item_index])
+    },
+
+    deleteRow(item_index) {
+      this.$emit("deleteRow", this.table_items[item_index])
+      this.table_items.splice(item_index, 1)
+    },
   },
 
   created() {
-    this.table_items = this.table_items.map(item => ({...item, isEdit: false, btnClass: "btn btn-primary "}));
+    this.table_items = this.table_items.map(item => ({...item,
+      isEdit: false,
+      showEditButton: true,
+      showDeleteButton: true,
+      btnClass: "btn btn-primary "}));
   },
 
   mounted() {
     for (let elem in this.fields){
-      this.empty_record[elem.key] = '';
+      this.empty_record[elem.key] = "";
     }
     this.empty_record['isEdit'] = true
     this.empty_record['btnClass'] = "btn btn-primary"
