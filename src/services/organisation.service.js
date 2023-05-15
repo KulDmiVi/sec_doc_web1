@@ -9,31 +9,30 @@ class OrganisationService {
       return api.get('/organisations/'+uid);
   };
 
-
   patchOrganisation(uid, organisation) {
     return api.patch(
         '/organisations/'+uid+'/',
         organisation
-  );
+    );
   };
 
   getDepartments(uid) {
-
-        return api.get('/organisations/'+uid+'/departments/');
+      return api.get('/organisations/'+uid+'/departments/');
   };
-  postDepartment(data){
-        return api.post('/departments/', data);
-    };
 
+  postDepartment(uid, data){
+      return api.post('/organisations/'+uid+'/departments/', data);
+  };
 
-    patchDepartment(department) {
+  patchDepartment(department) {
         return api.patch(
             '/departments/'+department['id']+'/',
                  department
         );
-  }
-  getDepartment(org_uid, dep_uid) {
-        return api.get('/organisations/'+org_uid+'/departments/'+dep_uid+'/');
+  };
+
+  deleteDepartment(uid) {
+        return api.delete('/departments/'+uid+'/');
   };
 
   getPosts(uid) {
@@ -47,7 +46,6 @@ class OrganisationService {
   getEmployees(uid) {
         return api.get('/organisations/'+uid+'/employees/');
   };
-
 
   getRooms(uid){
       return api.get('/organisations/'+uid+'/rooms/');

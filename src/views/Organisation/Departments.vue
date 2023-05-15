@@ -10,7 +10,9 @@
         v-bind:fields="fields"
         v-bind:items="departments"
         v-bind:enableEditForm="enableEditForm"
-        @addRow="addDepartment"
+        @saveRow="addDepartment"
+        @updateRow="updateDepartment"
+        @deleteRow="deleteDepartment"
     />
 
   </div>
@@ -53,8 +55,27 @@ export default {
   methods: {
     addDepartment(data){
       let current_user = JSON.parse(localStorage.getItem("user"))
-      data['organisation'] = current_user.organisation
-      OrganisationService.postDepartment(data).then(
+      data["organisation"] = current_user.organisation
+      OrganisationService.postDepartment(current_user.organisation, data).then(
+          (response) => {
+            this.request = response.data;
+          },
+          (error) => {
+            this.request = (
+                error.response &&
+                error.response.data &&
+                error.response.data.message) ||
+                error.message ||
+                error.toString();
+            if (error.response && error.response.status === 403){
+              EventBus.dispatch("logout");
+            }
+          }
+      );
+    },
+
+    updateDepartment(data){
+      OrganisationService.patchDepartment(data).then(
           (response) => {
             this.request = response.data;
           },
@@ -71,7 +92,26 @@ export default {
           }
       );
     },
+
+  deleteDepartment(data){
+    OrganisationService.deleteDepartment(data.id).then(
+        (response) => {
+          this.request = response.data;
+        },
+        (error) => {
+          this.request =
+              (error.response &&
+                  error.response.data &&
+                  error.response.data.message) ||
+              error.message ||
+              error.toString();
+          if (error.response && error.response.status === 403){
+            EventBus.dispatch("logout");
+          }
+        }
+    );
   },
+},
 
   created(){
     let user = JSON.parse(localStorage.getItem("user"))
