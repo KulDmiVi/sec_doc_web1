@@ -38,10 +38,10 @@ export default {
       departments: [],
       departmentUID: '',
       fields: [
-        { key: "name", label: "Наименование", class: 'form-control', type: 'text', teg: 'input' },
-        { key: "is_branch", label: "Филиал", class: 'form-check-input', type: 'checkbox', teg: 'input'},
-        { key: "KPP", label: "КПП", class: 'form-control', type: 'text', teg: 'input'},
-        { key: "address", label: "Адрес", class: 'form-control', type: 'text', teg: 'input'},
+        { key: "name", default:'', label: "Наименование", class: 'form-control', type: 'text', teg: 'input' },
+        { key: "is_branch" , default: 0, label: "Филиал", class: 'form-check-input', type: 'checkbox', teg: 'input'},
+        { key: "KPP", default:'', label: "КПП", class: 'form-control', type: 'text', teg: 'input'},
+        { key: "address", default:'', label: "Адрес", class: 'form-control', type: 'text', teg: 'input'},
       ],
     };
   },
