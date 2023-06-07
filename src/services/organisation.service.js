@@ -16,6 +16,10 @@ class OrganisationService {
     );
   };
 
+  getRbPosts(){
+      return api.get('/ref_books/posts/');
+  };
+
   getDepartments(uid) {
       return api.get('/organisations/'+uid+'/departments/');
   };
@@ -39,8 +43,15 @@ class OrganisationService {
      return api.get('/organisations/'+uid+'/posts/');
   };
 
-  postPost(data) {
-      return api.post('/posts/', data);
+  patchPosts(post) {
+      return api.patch(
+          '/posts/'+post['id']+'/',
+          post
+      );
+  };
+
+  postPost(uid, data) {
+        return api.post('/organisations/'+uid+'/posts/', data);
   };
 
   getEmployees(uid) {
