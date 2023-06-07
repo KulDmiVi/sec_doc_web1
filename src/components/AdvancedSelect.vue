@@ -1,113 +1,92 @@
 <template>
-  <div class="custom-select col-md-10" :tabindex="tabindex" @blur="open = false">
-    <div class="selected form-control" :class="{ open: open }" @click="open = !open">
-      {{ selected }}
+  <div class="custom-select col-md-10"  v-click-outside= "hideWidget">
+    <div class="selected form-control" :class="{open: open }" @click="open = !open">
+      <input type="text" class="form-control"  v-model="selected" ref="myInput" @input="onInput"  style="border:none;" />
     </div>
-    <div class="items form-control" :class="{ selectHide: !open }">
-      <div><input type="text" id="name" name="name" ></div>
-      <div
-          v-for="(option, i) of options"
-          :key="i"
-          @click="selected = option;  open = false; $emit('input', option);"
-      >
-        {{ option }}
+    <div class="items form-control" :class="{selectHide: !open }">
+      <div v-if="options.length !== 0" class="select-item" v-for="(option, i) of options" :key="i" @click="onSelect(option)">
+        {{option}}
       </div>
     </div>
   </div>
 </template>
 
+
 <script>
+
 export default {
   props: {
     options: {
       type: Array,
       required: true,
     },
-    default: {
+    value: {
       type: String,
       required: false,
       default: null,
     },
-    tabindex: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
   },
+
   data() {
     return {
-      selected: this.default
-          ? this.default
-          : this.options.length > 0
-              ? this.options[0]
-              : null,
+      selected: this.value ? this.value : (this.options.length > 0 ? this.options[0] : ''),
       open: false,
     };
   },
-  mounted() {
-    this.$emit("input", this.selected);
+
+  methods: {
+    hideWidget(){
+      if(this.open === true){
+        this.open=false
+      }
+    },
+    onSelect(option) {
+      this.setOption(option);
+      this.$refs.myInput.focus();
+    },
+
+    setOption(option) {
+      this.selected = option;
+      this.open = false;
+      this.$emit('input', this.selected);
+      this.$emit('change', this.selected);
+    },
+
+    onInput(event) {
+      const value = event.target.value;
+      this.$emit('update:modelValue', value);
+      const option = this.options.find(option => option.toLowerCase().startsWith(value.toLowerCase()));
+      if (option) {
+        this.setOption(option);
+      }
+
+    },
+  },
+
+  watch: {
+    value(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.selected = newValue;
+      }
+    },
+
+
+
   },
 };
 </script>
 
 <style scoped>
-
-/*.custom-select {*/
-/* position: relative;*/
-/*!*  width: 100%;*!*/
-/*!*  text-align: left;*!*/
-/*!*  outline: none;*!*/
-/*!*  height: 47px;*!*/
-/*!*  line-height: 47px;*!*/
-/*}*/
-
-/*.custom-select .selected {*/
-/*  height: 47px;*/
-
-/*  !*background-color: #0a0a0a;*!*/
-/*  border-radius: 6px;*/
-/*  border: 1px solid #666666;*/
-/*  !*color: #fff;*!*/
-/*  padding-left: 1em;*/
-/*  cursor: pointer;*/
-/*  user-select: none;*/
-/*}*/
-
-/*.custom-select .selected.open {*/
-/*  border: 1px solid #ad8225;*/
-/*  border-radius: 6px 6px 0px 0px;*/
-/*}*/
-
-/*.custom-select .selected:after {*/
-/*  position: absolute;*/
-/*  content: "";*/
-/*  top: 22px;*/
-/*  right: 1em;*/
-/*  width: 0;*/
-/*  height: 0;*/
-/*  border: 5px solid transparent;*/
-/*  border-color: #fff transparent transparent transparent;*/
-/*}*/
-
 .custom-select .items {
-
   position: absolute;
   background-color: white;
-
 }
 
-/*.custom-select .items div {*/
-/*  color: #fff;*/
-/*  padding-left: 1em;*/
-/*  cursor: pointer;*/
-/*  user-select: none;*/
-/*}*/
-
-.custom-select .items div:hover {
-  background-color: #ad8225;
+.custom-select .items .select-item:hover {
+  background-color: cornflowerblue;
 }
 
 .selectHide {
- display: none;
+  display: none;
 }
 </style>
