@@ -14,29 +14,36 @@
     <tbody v-if="table_items">
     <tr v-for="(item, item_index) in table_items">
       <td v-for="field in fields">
+
         <input v-bind:class="field.class"
                v-if="item.property['isEdit'] && field['teg']==='input' &&  field['list']"
                :type="field.type"
                v-model="item.data[field.key]"
                :list = "field['list']">
         <datalist v-if="item.property['isEdit'] && field['teg']==='input' &&  field['list']"
-                  :id="field['list']"
-        >
+                  :id="field['list']">
           <option v-for="option in field.options" :value="option.id">{{option.name}}</option>
         </datalist>
-        <input v-else-if ="item.property['isEdit'] && field['teg']==='input' "
+
+        <input v-else-if ="item.property['isEdit'] && field['teg']==='input'"
                :class="field.class"
                :type="field.type"
                v-model="item.data[field.key]">
+
         <select v-else-if="item.property['isEdit'] && field['teg']==='select'"
                 class="form-select"
-                v-model="item.data[field.key]"
-        >
+                v-model="item.data[field.key]">
           <option v-for = 'option in field.options' v-bind:value="option.id" >{{option.name}}</option>
         </select>
+        <AdvancedSelect
+            v-else-if="item.property['isEdit'] &&  field['teg']==='AdvancedSelect'"
+            :options="field.options"
+            :value="item.data[field.key]"
+            v-model="item.data[field.key]"
+            class="select"
+        />
         <span v-else>{{item.data[field.key]}}</span>
       </td>
-
       <td id="action">
         <button v-show="item.property['showUpdateButton']" style="border:none;"  @click="updateTableRow(item_index)">
           <img src="./icons/2931176_diskette_disk_usb_drive_guardar_save_floppy.svg" alt="Сохранить"  width="20" height="20">
@@ -57,13 +64,26 @@
   </table>
     </div>
   </div>
-
 </template>
 
+
+
+
+
 <script>
+import AdvancedSelect  from '@/components/AdvancedSelect.vue'
+
 export default {
   name: "App",
-  components: {},
+  components: {
+    AdvancedSelect,
+  },
+
+  props: {
+    enableEditForm: Boolean,
+    fields: Array,
+    items: Array,
+  },
 
   data() {
     return {
@@ -72,11 +92,7 @@ export default {
     };
   },
 
-  props: {
-    enableEditForm: Boolean,
-    fields: Array,
-    items: Array,
-  },
+
 
 
   methods: {
@@ -87,7 +103,7 @@ export default {
         property.showAddButton = false;
         property.showUpdateButton = true;
         property.isEdit = !property.isEdit;
-      } else {
+       } else {
         this.$emit("showForm", id);
       }
     },
@@ -102,8 +118,8 @@ export default {
     },
 
     addTableRow() {
-      const newRow = { ...this.empty_record };
-      newRow.property = {
+      const newRow = JSON.parse(JSON.stringify(this.empty_record))
+       newRow.property = {
         showAddButton: true,
         showEditButton: false,
         showDeleteButton: true,
@@ -124,7 +140,6 @@ export default {
 
     deleteTableRow(index) {
       const item = this.table_items[index].data;
-      console.log(item)
       this.$emit("deleteRow", item);
       this.table_items.splice(index, 1);
     },
