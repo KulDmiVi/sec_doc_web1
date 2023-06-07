@@ -1,10 +1,12 @@
 <template>
    <h1>Должности</h1>
     <TableEditor
-        v-if="isRequest"
+        v-if="isRequest1 && isRequest2"
         v-bind:fields="fields"
         v-bind:items="posts"
-        @addRow="addPost"
+        v-bind:enableEditForm="enableEditForm"
+        @saveRow="addPost"
+        @updateRow="updatePost"
     />
 </template>
 
@@ -13,26 +15,26 @@ import TableEditor from '@/components/VueEditortable.vue'
 import OrganisationService from "@/services/organisation.service";
 import EventBus from "@/common/EventBus";
 
-
-
-
 export default {
   name: "departmens",
   data() {
     return {
+      posts_option:[],
       fields: [
-        {key: "post",
-          label: "Наименование",
+        { key: "post",
+          default:'',
+          label: "Должность",
           class: 'form-control',
           type: 'text',
-          teg: 'input',
-          list: 'rbPost',
-          datalist: ['test1', 'test2']
-
+          teg: 'AdvancedSelect',
+          options: []
         },
       ],
       posts: [],
-      isRequest: false,
+      rb_posts: [],
+      isRequest1: false,
+      isRequest2: false,
+      enableEditForm: false
     };
   },
 
@@ -43,19 +45,40 @@ export default {
   methods: {
     addPost(data){
       let current_user = JSON.parse(localStorage.getItem("user"))
-      console.log(current_user.organisation)
       data['organisation'] = current_user.organisation
-      OrganisationService.postPost(data).then(
+      OrganisationService.postPost(current_user.organisation, data).then(
           (response) => {
             this.request = response.data;
           },
           (error) => {
             this.request =
                 (error.response &&
-                    error.response.data &&
-                    error.response.data.message) ||
-                error.message ||
-                error.toString();
+                 error.response.data &&
+                 error.response.data.message) ||
+                 error.message ||
+                 error.toString();
+            if (error.response && error.response.status === 403){
+              EventBus.dispatch("logout");
+            }
+          }
+      );
+    },
+
+    updatePost(data){
+      let current_user = JSON.parse(localStorage.getItem("user"))
+      console.log(current_user.organisation)
+      data['organisation'] = current_user.organisation
+      OrganisationService.patchPosts(data).then(
+          (response) => {
+            this.request = response.data;
+          },
+          (error) => {
+            this.request =
+                (error.response &&
+                 error.response.data &&
+                 error.response.data.message) ||
+                 error.message ||
+                 error.toString();
             if (error.response && error.response.status === 403){
               EventBus.dispatch("logout");
             }
@@ -66,25 +89,44 @@ export default {
 
   created(){
     let user = JSON.parse(localStorage.getItem("user"))
-    OrganisationService.getPosts(user.organisation).then(
+    OrganisationService.getRbPosts().then(
         (response) => {
-          this.posts = response.data;
-          this.isRequest=true
+          this.rb_posts = response.data;
+          this.rb_posts.forEach(item =>
+          {this.fields[0].options.push(item.value)});
+           this.isRequest2=true
         },
         (error) => {
-          this.getPosts =
+          this.response =
               (error.response &&
-                  error.response.data &&
-                  error.response.data.message) ||
-              error.message ||
-              error.toString();
-
+               error.response.data &&
+               error.response.data.message) ||
+               error.message ||
+               error.toString();
           if (error.response && error.response.status === 403) {
             EventBus.dispatch("logout");
           }
         }
     );
 
+    OrganisationService.getPosts(user.organisation).then(
+        (response) => {
+          this.posts = response.data;
+
+          this.isRequest1=true
+        },
+        (error) => {
+          this.posts =
+              (error.response &&
+               error.response.data &&
+               error.response.data.message) ||
+               error.message ||
+               error.toString();
+          if (error.response && error.response.status === 403) {
+            EventBus.dispatch("logout");
+          }
+        }
+    );
   },
 }
 </script>
