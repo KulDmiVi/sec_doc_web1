@@ -21,7 +21,7 @@ export default {
     return {
       posts_option:[],
       fields: [
-        { key: "post",
+        { key: "name",
           default:'',
           label: "Должность",
           class: 'form-control',
@@ -112,7 +112,6 @@ export default {
     OrganisationService.getPosts(user.organisation).then(
         (response) => {
           this.posts = response.data;
-
           this.isRequest1=true
         },
         (error) => {

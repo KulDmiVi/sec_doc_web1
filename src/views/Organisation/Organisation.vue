@@ -1,5 +1,5 @@
 <template>
-      <div class="row">
+      <div class="row" v-if="namesData">
         <div class="col-md-10 order-md-1">
           <div class="mb-1"> {{this.organisation}}</div>
           <h4 class="mb-1">Сведения об организации</h4>
@@ -27,36 +27,34 @@
               </div>
             </div>
             <div class="mb-1">
-              <label for="username">Хозяйствующий субъект</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="business_entity" v-model="organisation.business_entity">
-              </div>
+              <label for="org_names_choice">Условное наименование</label>
+              <input  class="form-control" list="organisation-names" id="org_names_choice" name="org_names_choice" v-model="organisation.business_entity">
+              <datalist id="organisation-names">
+                <option v-for ="org_name in names" :value = org_name></option>
+              </datalist>
             </div>
 
             <div class="mb-1">
-              <label for="username">Условное наименование</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="usl_name" required="">
-              </div>
-            </div>
-
-            <div class="mb-1">
-              <label for="username">Тип организации</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="type"  v-model="organisation.type">
-              </div>
+              <label for="org_types_choice">Тип организации</label>
+              <input  class="form-control" list="organisation-types" id="org_types_choice" name="org_types_choice"  v-model="organisation.type">
+              <datalist id="organisation-types">
+                <option v-for ="org_type in types" :value = org_type></option>
+              </datalist>
             </div>
             <div class="mb-1">
-              <label for="username">Учредительный документ</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="foundation_document"  v-model="organisation.foundation_document">
-              </div>
+              <label for="org_foundation_document">Учредительный документ</label>
+              <input  class="form-control" list="foundation-document" id="org_foundation_document" name="org_foundation_document"
+                      v-model="organisation.foundation_document">
+              <datalist id="foundation-document">
+                <option v-for ="foundation_doc in foundation_document" :value = foundation_doc></option>
+              </datalist>
             </div>
             <div class="mb-1">
-              <label for="username">Сфера деятельности организации</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="field_activity" required=""  v-model="organisation.field_activity">
-              </div>
+              <label for="org_sphere">Сфера деятельности организации</label>
+              <input  class="form-control" list="org-sphere" id="org_sphere" name="org_sphere" v-model="organisation.field_activity">
+              <datalist id="org-sphere">
+                <option v-for ="sphere in spheres" :value = sphere></option>
+              </datalist>
             </div>
             <div class="mb-1">
               <label for="username">Населенный пункт, в котором расположена организация</label>
@@ -106,12 +104,19 @@ export default {
   name: "organisation",
   data() {
     return {
+      namesData: false,
       organisation: {},
+      names: [],
+      types: [],
+      foundation_document: [],
+      spheres: [],
     };
   },
   methods: {
     submit() {
-      UserService.patchOrganisation(this.$route.params.org_uid, this.organisation).then(
+      let user = JSON.parse(localStorage.getItem("user"))
+      delete  this.organisation.registrator
+      UserService.patchOrganisation(user.organisation, this.organisation).then(
           (response) => {
             this.organisations = response.data;
           },
@@ -139,6 +144,37 @@ export default {
           this.organisation = response.data;
         }
     );
+
+    // UserService.getNames().then(
+    //     (response) => {
+    //       response.data.forEach(
+    //           item => {this.names.push(item.value)
+    //           });
+    //       this.namesData = true
+    //       console.log(this.names)
+    //     });
+
+    // UserService.getTypes().then(
+    //     (response) => {
+    //       response.data.forEach(
+    //           item => {this.types.push(item.value)
+    //           });
+    //     });
+
+    UserService.getFoundationDocument().then(
+        (response) => {
+          response.data.forEach(
+              item => {this.foundation_document.push(item.value)
+              });
+        });
+
+    // UserService.getSpheres().then(
+    //     (response) => {
+    //       response.data.forEach(
+    //           item => {this.spheres.push(item.value)
+    //           });
+    //
+    //     });
   },
 };
 

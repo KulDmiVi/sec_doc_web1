@@ -2,15 +2,15 @@ import api from './api';
 
 class OrganisationService {
   getOrganisations() {
-    return api.get('/registrators/me/organisations/');
+    return api.get('/organisations/');
   };
 
   getOrganisation(uid) {
-      return api.get('/organisations/'+uid);
+      return api.get('/organisations/'+uid+'/');
   };
 
   patchOrganisation(uid, organisation) {
-    return api.patch(
+    return api.put(
         '/organisations/'+uid+'/',
         organisation
     );
@@ -20,12 +20,12 @@ class OrganisationService {
       return api.get('/ref_books/posts/');
   };
 
-  getDepartments(uid) {
-      return api.get('/organisations/'+uid+'/departments/');
+  getDepartments() {
+      return api.get('/departments/');
   };
 
   postDepartment(uid, data){
-      return api.post('/organisations/'+uid+'/departments/', data);
+      return api.post('/departments/', data);
   };
 
   patchDepartment(department) {
@@ -39,8 +39,8 @@ class OrganisationService {
         return api.delete('/departments/'+uid+'/');
   };
 
-  getPosts(uid) {
-     return api.get('/organisations/'+uid+'/posts/');
+  getPosts() {
+     return api.get('/posts/');
   };
 
   patchPosts(post) {
@@ -51,12 +51,9 @@ class OrganisationService {
   };
 
   postPost(uid, data) {
-        return api.post('/organisations/'+uid+'/posts/', data);
+        return api.post('/posts/', data);
   };
 
-  getEmployees(uid) {
-        return api.get('/organisations/'+uid+'/employees/');
-  };
 
   getRooms(uid){
       return api.get('/organisations/'+uid+'/rooms/');
@@ -66,22 +63,31 @@ class OrganisationService {
       return api.post('/organisations/'+uid+'/rooms/', data);
   };
 
-  postEmployee(data){
-    api.post('/employees/', data)
+    getEmployees(){
+        return api.get('/employees/')
+    };
+
+  postEmployee(uid, data){
+      return api.post('/employees/', data)
   };
 
-  //
-  // getUserBoard() {
-  //   return api.get('/test/user');
-  // }
-  //
-  // getModeratorBoard() {
-  //   return api.get('/test/mod');
-  // }
-  //
-  // getAdminBoard() {
-  //   return api.get('/test/admin');
-  // }
+
+
+  getSpheres(){
+      return api.get('/ref_books/org_spheres/');
+  };
+
+  getTypes(){
+      return api.get('/ref_books/org_types/');
+  };
+  getFoundationDocument(){
+      return api.get('/ref_books/foundation-documents/');
+  };
+
+  getNames(){
+      return api.get('/ref_books/org_names/');
+  };
+
 }
 
 export default new OrganisationService();

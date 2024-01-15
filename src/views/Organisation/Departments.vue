@@ -115,7 +115,7 @@ export default {
 
   created(){
     let user = JSON.parse(localStorage.getItem("user"))
-    OrganisationService.getDepartments(user.organisation).then(
+    OrganisationService.getDepartments().then(
         (response) => {
           this.departments = response.data;
           this.isRequest=true

@@ -1,21 +1,12 @@
 <template>
-
     <h1>Сотрудники</h1>
-  <div> sawfdaew  <AdvancedSelect
-      :options="['go', 'python', 'rust', 'javascript']"
-      :default="'go'"
-      class="select"
-
-    />
-    <!--      @input="alert(displayToKey($event))"-->
-  </div>
     <TableEditor
         v-if="isRequest && isDepartmentRequest && isPostRequest"
         v-bind:fields="fields"
         v-bind:items="employees"
-        @addRow="addEmployee"
+        @saveRow="addEmployee"
+        @updateRow="updateEmployee"
     />
-
 </template>
 
 <script>
@@ -58,10 +49,10 @@ export default {
   },
 
   methods: {
+    updateEmployee(data){console.log("updateEmployee")},
+
     addEmployee(data){
-      let current_user = JSON.parse(localStorage.getItem("user"))
-      data['organisation'] = current_user.organisation
-      OrganisationService.postEmployee(data).then(
+      OrganisationService.postEmployee(data.department, data).then(
           (response) => {
             this.request = response.data;
           },
@@ -78,83 +69,95 @@ export default {
           }
       );
     },
-  },
 
+    getDepartments(){
+      let user = JSON.parse(localStorage.getItem("user"))
+      OrganisationService.getDepartments(user.organisation).then(
+          (response) => {
+            this.request = response.data;
+            this.request.forEach(element => {
+              this.departments.push(
+                  {
+                    id: element.id,
+                    select_name: element.name,
+                  }
+              )
+            });
+            this.fields[4].options = this.departments
+            this.isDepartmentRequest = true
+          },
+         (error) => {
+           this.request =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+            if (error.response && error.response.status === 403) {
+              EventBus.dispatch("logout");
+            }
+          }
+      );
+    },
+
+    getEmployees(){
+      OrganisationService.getEmployees().then(
+          (response) => {
+            this.employees = response.data;
+            console.log(this.employees );
+            this.isRequest=true;
+            this.isDepartmentRequest=true;
+            this.isPostRequest=true;
+          },
+          (error) => {
+            posts =
+                (error.response && error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+            if (error.response && error.response.status === 403) {
+              EventBus.dispatch("logout");
+            }
+          }
+      );
+    }
+  },
 
   mounted(){
     let user = JSON.parse(localStorage.getItem("user"))
+    let posts = [{id:null, select_name:'Выберети значение'},]
 
-    let departments = [{id:null, name:'Выберети значение'},]
-    let posts = [{id:null, name:'Выберети значение'},]
-    OrganisationService.getDepartments(user.organisation).then(
+    OrganisationService.getPosts().then(
         (response) => {
-          departments = departments.concat(response.data);
-          this.fields.forEach((element) => {
-            if(element["key"] === "department"){
-              element['options'] = departments
-              }
-          });
 
-          this.isDepartmentRequest = true
-        },
-        (error) => {
-          departments =
-              (error.response &&
-                  error.response.data &&
-                  error.response.data.message) ||
-              error.message ||
-              error.toString();
-
-          if (error.response && error.response.status === 403) {
-            EventBus.dispatch("logout");
-          }
-        }
-    );
-
-    OrganisationService.getPosts(user.organisation).then(
-        (response) => {
-          let optionsData = response.data.map(item => ({id: item['id'], name:item['post'] }));
+          let optionsData = response.data.map(item => ({id: item['id'], select_name:item['name'] }));
           posts = posts.concat(optionsData);
+          console.log(posts)
           this.fields.forEach((element) => {
             if(element["key"] === "post"){
               element['options'] = posts
             }
           });
-
+          console.log(this.fields);
           this.isPostRequest = true
         },
         (error) => {
-          departments =
+          posts =
               (error.response &&
-                  error.response.data &&
-                  error.response.data.message) ||
-              error.message ||
-              error.toString();
-
+               error.response.data &&
+               error.response.data.message) ||
+               error.message ||
+               error.toString();
           if (error.response && error.response.status === 403) {
             EventBus.dispatch("logout");
           }
         }
     );
+  },
 
-    OrganisationService.getEmployees(user.organisation).then(
-        (response) => {
-          this.employees = response.data;
-          this.isRequest=true
-        },
-        (error) => {
-          this.employees =
-              (error.response &&
-                  error.response.data &&
-                  error.response.data.message) ||
-              error.message ||
-              error.toString();
-
-          if (error.response && error.response.status === 403) {
-            EventBus.dispatch("logout");
-          }
-        }
-    );
+  created(){
+    this.getEmployees();
+    this.getDepartments();
   },
 }
 </script>

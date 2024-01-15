@@ -14,7 +14,6 @@
     <tbody v-if="table_items">
     <tr v-for="(item, item_index) in table_items">
       <td v-for="field in fields">
-
         <input v-bind:class="field.class"
                v-if="item.property['isEdit'] && field['teg']==='input' &&  field['list']"
                :type="field.type"
@@ -33,7 +32,7 @@
         <select v-else-if="item.property['isEdit'] && field['teg']==='select'"
                 class="form-select"
                 v-model="item.data[field.key]">
-          <option v-for = 'option in field.options' v-bind:value="option.id" >{{option.name}}</option>
+          <option v-for = 'option in field.options' v-bind:value="option.id" >{{option.select_name}}</option>
         </select>
         <AdvancedSelect
             v-else-if="item.property['isEdit'] &&  field['teg']==='AdvancedSelect'"
