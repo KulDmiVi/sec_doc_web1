@@ -19,9 +19,7 @@
                 tag="li"
                 active-class="active"
                 :to="link.url"
-                :exact="link.exact"
-
-            >
+                :exact="link.exact">
               <a class="nav-link" href="#">{{link.title}}</a>
             </router-link>
           </ul>
@@ -30,6 +28,18 @@
           <a class="nav-link" href="#">
             Комиссии
           </a>
+          <ul class="flex-column ms-1" id="org-submenu">
+            <router-link
+                v-for="link in comissions_links"
+                class="nav-item"
+                :key="link.url"
+                tag="li"
+                active-class="active"
+                :to="link.url"
+                :exact="link.exact">
+              <a class="nav-link" href="#">{{link.title}}</a>
+            </router-link>
+          </ul>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">
@@ -68,7 +78,21 @@ export default {
        {title: 'Сотрудники', url: '/employees' },
        {title: 'Должности', url: '/posts' },
        {title: 'Помещения', url: '/rooms' },
-     ]
+     ],
+    kii_links: [
+      {title: 'Реквизиты', url: '/organisation', exact: true },
+      {title: 'Подразделения', url: '/departments' },
+      {title: 'Сотрудники', url: '/employees' },
+      {title: 'Должности', url: '/posts' },
+      {title: 'Помещения', url: '/rooms' },
+    ],
+    comissions_links: [
+      {title: 'Реквизиты', url: '/organisation', exact: true },
+      {title: 'Подразделения', url: '/departments' },
+      {title: 'Сотрудники', url: '/employees' },
+      {title: 'Должности', url: '/posts' },
+      {title: 'Помещения', url: '/rooms' },
+    ]
     })
   }
 </script>

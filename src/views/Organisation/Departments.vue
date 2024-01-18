@@ -3,8 +3,7 @@
 
   <div>
     <h1>Подразделения</h1>
-    <DepartmentForms ref = 'DepartmentForm' v-bind:uid="departmentUID"  v-show="isInfoPopupVisible"/>
-
+<!--    <DepartmentForms ref = 'DepartmentForm' v-bind:uid="departmentUID"  v-show="isInfoPopupVisible"/>-->
     <TableEditor
         v-if="isRequest"
         v-bind:fields="fields"
@@ -22,9 +21,6 @@
 import TableEditor from '@/components/VueEditortable.vue'
 import OrganisationService from "@/services/organisation.service";
 import EventBus from "@/common/EventBus";
-import DepartmentForms from "@/views/Organisation/Department.vue";
-
-
 
 export default {
   name: "departments",
@@ -48,8 +44,7 @@ export default {
 
 
   components: {
-    TableEditor,
-    DepartmentForms
+    TableEditor
   },
 
   methods: {
@@ -82,8 +77,8 @@ export default {
           (error) => {
             this.request =
                 (error.response &&
-                    error.response.data &&
-                    error.response.data.message) ||
+                 error.response.data &&
+                 error.response.data.message) ||
                 error.message ||
                 error.toString();
             if (error.response && error.response.status === 403){
@@ -114,7 +109,6 @@ export default {
 },
 
   created(){
-    let user = JSON.parse(localStorage.getItem("user"))
     OrganisationService.getDepartments().then(
         (response) => {
           this.departments = response.data;

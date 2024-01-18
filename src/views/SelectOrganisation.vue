@@ -14,13 +14,13 @@
       </div>
     </form>
   </div>
-
 </template>
+
 
 <script>
 import UserService from "@/services/organisation.service";
 import EventBus from "@/common/EventBus";
-import * as path from "path";
+
 export default {
   name: 'select_organisation',
   data() {
@@ -30,7 +30,6 @@ export default {
       current_organisation: '',
     }
   },
-
   methods: {
     submit() {
       let user = JSON.parse(localStorage.getItem("user"));
@@ -39,7 +38,6 @@ export default {
       this.$router.push({name: "organisation"})
     }
   },
-
   mounted() {
     UserService.getOrganisations().then(
         (response) => {
@@ -58,9 +56,6 @@ export default {
           }
         }
     );
-
   },
-
-
 }
 </script>

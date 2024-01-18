@@ -43,7 +43,7 @@ export default {
     handleLogin() {
       const formData = {
         username: this.username,
-         password: this.password}
+        password: this.password}
       this.loading = true;
       this.$store.dispatch("auth/login", formData).then(
           () => {

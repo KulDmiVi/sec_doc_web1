@@ -1,15 +1,17 @@
 <template>
     <h1>Помещения</h1>
-    <TableEditor v-if="isRequest"
+    <TableEditor v-if="isRequest && isDepartmentRequest"
                  v-bind:fields="fields"
                  v-bind:items="rooms"
-                 @addRow = "addRoom" />
+                 @saveRow="addRoom"
+                 />
 </template>
 
 <script>
 import TableEditor from '@/components/VueEditortable.vue'
 import OrganisationService from "@/services/organisation.service";
 import EventBus from "@/common/EventBus";
+import AdvancedSelect from "@/components/AdvancedSelect.vue";
 
 export default {
   name: "departmens",
@@ -17,23 +19,27 @@ export default {
     return {
       user: '',
       rooms: [],
+      departments: [],
       fields: [
-        { key: "department", label: "Подразделения", class: 'form-control', type: 'text', teg: 'input'},
-        { key: "name", label: "Имя", class: 'form-control', type: 'text', teg: 'input'},
+        { key: "department", label: "Подразделение",
+          class: 'form-control', type: 'text',
+          teg: 'select', options: [] },
+        { key: "name", label: "Наименование", class: 'form-control', type: 'text', teg: 'input'},
         { key: "address", label: "Адресс", class: 'form-control', type: 'text', teg: 'input',},
-        { key: "is_active", label: "Активна", class: 'form-control', type: 'text', teg: 'input'},
+        { key: "is_active" , default: 1, label: "Активна", class: 'form-check-input', type: 'checkbox', teg: 'input'},
       ],
       isRequest: false,
+      isDepartmentRequest: false,
     };
   },
+
   components: {
     TableEditor,
+    AdvancedSelect,
   },
-
- methods: {
+  methods: {
    addRoom(data){
-     let user = JSON.parse(localStorage.getItem("user"))
-      OrganisationService.postRoom(user.organisation, data).then(
+      OrganisationService.postRoom(data).then(
           (response) => {
             this.request = response.data;
           },
@@ -50,13 +56,39 @@ export default {
             }
           }
     );
-    }
- },
-
+    },
+   getDepartments(){
+    OrganisationService.getDepartments().then(
+        (response) => {
+          this.request = response.data;
+          this.request.forEach(element => {
+            this.departments.push(
+                {
+                  id: element.id,
+                  select_name: element.name,
+                }
+            )
+          });
+          this.fields[0].options = this.departments
+          this.isDepartmentRequest = true
+        },
+        (error) => {
+          this.request =
+              (error.response &&
+                  error.response.data &&
+                  error.response.data.message) ||
+              error.message ||
+              error.toString();
+          if (error.response && error.response.status === 403) {
+            EventBus.dispatch("logout");
+          }
+        }
+    );
+  },
+  },
 
   mounted(){
-    this.user = JSON.parse(localStorage.getItem("user"))
-    OrganisationService.getRooms(this.user.organisation).then(
+    OrganisationService.getRooms().then(
         (response) => {
           this.rooms = response.data;
           this.isRequest = true
@@ -74,6 +106,10 @@ export default {
           }
         }
     );
+  },
+
+  created(){
+    this.getDepartments();
   },
 }
 </script>

@@ -1,8 +1,7 @@
 <template>
+      <h1>Сведения об организации</h1>
       <div class="row" v-if="namesData">
         <div class="col-md-10 order-md-1">
-          <div class="mb-1"> {{this.organisation}}</div>
-          <h4 class="mb-1">Сведения об организации</h4>
           <form class="needs-validation"  @submit.prevent="submit">
             <div class="mb-1">
               <label for="username">Полное наименование</label>
@@ -33,7 +32,6 @@
                 <option v-for ="org_name in names" :value = org_name></option>
               </datalist>
             </div>
-
             <div class="mb-1">
               <label for="org_types_choice">Тип организации</label>
               <input  class="form-control" list="organisation-types" id="org_types_choice" name="org_types_choice"  v-model="organisation.type">
@@ -94,7 +92,6 @@
           </form>
         </div>
       </div>
-
 </template>
 
 <script>
@@ -123,18 +120,16 @@ export default {
           (error) => {
             this.content =
                 (error.response &&
-                    error.response.data &&
-                    error.response.data.message) ||
-                error.message ||
-                error.toString();
+                 error.response.data &&
+                 error.response.data.message) ||
+                 error.message ||
+                 error.toString();
 
             if (error.response && error.response.status === 403) {
               EventBus.dispatch("logout");
             }
           }
       );
-
-
     }
   },
   mounted() {
@@ -142,7 +137,15 @@ export default {
     UserService.getOrganisation(user.organisation).then(
         (response) => {
           this.organisation = response.data;
-        }
+          this.namesData = true;
+        },
+       (error) => {
+          this.content = (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+              error.message ||
+              error.toString();
+       }
     );
 
     // UserService.getNames().then(

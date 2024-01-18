@@ -49,7 +49,7 @@ export default {
   },
 
   methods: {
-    updateEmployee(data){console.log("updateEmployee")},
+    updateEmployee(){console.log("updateEmployee")},
 
     addEmployee(data){
       OrganisationService.postEmployee(data.department, data).then(
@@ -71,8 +71,7 @@ export default {
     },
 
     getDepartments(){
-      let user = JSON.parse(localStorage.getItem("user"))
-      OrganisationService.getDepartments(user.organisation).then(
+      OrganisationService.getDepartments().then(
           (response) => {
             this.request = response.data;
             this.request.forEach(element => {
@@ -110,7 +109,7 @@ export default {
             this.isPostRequest=true;
           },
           (error) => {
-            posts =
+            this.request =
                 (error.response && error.response.data &&
                     error.response.data.message) ||
                 error.message ||
@@ -124,9 +123,7 @@ export default {
   },
 
   mounted(){
-    let user = JSON.parse(localStorage.getItem("user"))
     let posts = [{id:null, select_name:'Выберети значение'},]
-
     OrganisationService.getPosts().then(
         (response) => {
 

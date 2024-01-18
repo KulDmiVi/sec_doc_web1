@@ -55,12 +55,12 @@ class OrganisationService {
   };
 
 
-  getRooms(uid){
-      return api.get('/organisations/'+uid+'/rooms/');
+  getRooms(){
+      return api.get('/rooms/');
   };
 
-  postRoom(uid, data){
-      return api.post('/organisations/'+uid+'/rooms/', data);
+  postRoom(data){
+      return api.post('/rooms/', data);
   };
 
     getEmployees(){
