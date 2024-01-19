@@ -15,12 +15,9 @@ import OrganisationService from "@/services/organisation.service";
 import EventBus from "@/common/EventBus";
 import AdvancedSelect from '@/components/AdvancedSelect.vue';
 
-
-
 export default {
   name: "employees",
   data() {
-
     return {
       departments: [],
       fields: [

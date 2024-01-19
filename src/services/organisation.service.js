@@ -84,6 +84,14 @@ class OrganisationService {
       return api.get('/ref_books/foundation-documents/');
   };
 
+  getCommissionTypes(){
+      return api.get('/ref_books/commission-types/');
+  };
+
+    getResponsibilities(){
+        return api.get('/ref_books/responsibilities/');
+    };
+
   getNames(){
       return api.get('/ref_books/org_names/');
   };

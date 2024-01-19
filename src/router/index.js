@@ -39,11 +39,25 @@ const routes = [
     component: () => import('../views/Organisation/Employees.vue')
   },
   {
+    path: '/commissions',
+    name: 'commissions',
+    meta: {layout: 'main', auth: true},
+    component: () => import('../views/Organisation/Departments.vue')
+  },
+  {
+    path: '/responsibilities',
+    name: 'responsibilities',
+    meta: {layout: 'main', auth: true},
+    component: () => import('../views/Organisation/Departments.vue')
+  },
+  {
     path: '/rooms',
     name: 'rooms',
     meta: {layout: 'main', auth: true},
     component: () => import('../views/Organisation/Rooms.vue')
   },
+
+
 ]
 
 const router = createRouter({

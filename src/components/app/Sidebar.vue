@@ -1,101 +1,154 @@
 <template>
+  <!-- The sidebar component contains the main menu and other important links for the application. -->
   <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0">
     <div class="sd-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
-      <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-        <span>Справочники</span>
-        <a class="d-flex align-items-center text-muted" href="#"> </a>
-      </h6>
-      <ul class="nav flex-column">
-        <li class="nav-item">
-          <a class="nav-link"
-             href="#">
-            Организация
-          </a>
-          <ul class="flex-column ms-1" id="org-submenu">
-            <router-link
+      <!-- The sidebar heading contains the name of the section and a link to the section's page. -->
+        <ul class="nav" >
+          <li class="nav-item">
+            <a class="btn btn-primary active"
+             data-bs-toggle="collapse"
+             href="#org-submenu"
+             aria-expanded="true"
+             aria-controls="org-submenu">
+             Организация
+            </a>
+            <ul class="flex-column ms-1">
+              <router-link
                 v-for="link in org_links"
                 class="nav-item"
+                id="org-submenu"
                 :key="link.url"
                 tag="li"
                 active-class="active"
                 :to="link.url"
                 :exact="link.exact">
-              <a class="nav-link" href="#">{{link.title}}</a>
-            </router-link>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">
-            Комиссии
-          </a>
-          <ul class="flex-column ms-1" id="org-submenu">
-            <router-link
-                v-for="link in comissions_links"
+                <a class="nav-link" href="#">{{link.title}}</a>
+              </router-link>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-primary active"
+               data-bs-toggle="collapse"
+               href="#commission-submenu"
+               aria-expanded="false"
+               aria-controls="commission-submenu">
+              Комиссии
+            </a>
+            <ul class="flex-column ms-1" >
+              <router-link
+                v-for="link in commissionTypes"
+                id="commission-submenu"
                 class="nav-item"
                 :key="link.url"
                 tag="li"
                 active-class="active"
                 :to="link.url"
                 :exact="link.exact">
-              <a class="nav-link" href="#">{{link.title}}</a>
-            </router-link>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">
-            Объекты КИИ
-          </a>
-        </li>
-      </ul>
-
-      <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-        <span>Документы</span>
-        <a class="d-flex align-items-center text-muted" href="#"> </a>
-      </h6>
-      <ul class="nav flex-column mb-2">
-        <li class="nav-item">
-          <a class="nav-link" href="#">
-            КИИ
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">
-            ПДН
-          </a>
-        </li>
-      </ul>
+                <a class="nav-link" href="#">{{link.title}}</a>
+              </router-link>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-primary active"
+               data-bs-toggle="collapse"
+               href="#resp-submenu"
+               aria-expanded="false"
+               aria-controls="resp-submenu">Ответственные</a>
+            <ul class="flex-column ms-1">
+              <router-link
+                v-for="link in responsibilities"
+                class="nav-item"
+                id="resp-submenu"
+                :key="link.url"
+                tag="li"
+                active-class="active"
+                :to="link.url"
+                :exact="link.exact">
+                <a class="nav-link" href="#">{{link.title}}</a>
+              </router-link>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#"> Объекты КИИ</a>
+          </li>
+        </ul>
+      </div>
     </div>
-  </div>
 </template>
+
+
+
 <script>
-// import localizeFilter from '@/filters/localize.filter'
+import OrganisationService from "@/services/organisation.service";
+import EventBus from "@/common/EventBus";
+
 export default {
-//   props: ['value'],
-  data: () => ({
-     org_links: [
-       {title: 'Реквизиты', url: '/organisation', exact: true },
-       {title: 'Подразделения', url: '/departments' },
-       {title: 'Сотрудники', url: '/employees' },
-       {title: 'Должности', url: '/posts' },
-       {title: 'Помещения', url: '/rooms' },
-     ],
-    kii_links: [
-      {title: 'Реквизиты', url: '/organisation', exact: true },
-      {title: 'Подразделения', url: '/departments' },
-      {title: 'Сотрудники', url: '/employees' },
-      {title: 'Должности', url: '/posts' },
-      {title: 'Помещения', url: '/rooms' },
-    ],
-    comissions_links: [
-      {title: 'Реквизиты', url: '/organisation', exact: true },
-      {title: 'Подразделения', url: '/departments' },
-      {title: 'Сотрудники', url: '/employees' },
-      {title: 'Должности', url: '/posts' },
-      {title: 'Помещения', url: '/rooms' },
-    ]
-    })
-  }
+  name: "sidebar",
+
+  data() {
+    return {
+      org_links: [
+        {title: 'Реквизиты', url: '/organisation', exact: true},
+        {title: 'Подразделения', url: '/departments'},
+        {title: 'Сотрудники', url: '/employees'},
+        {title: 'Должности', url: '/posts'},
+        {title: 'Помещения', url: '/rooms'},
+      ],
+      kii_links: [],
+      commissionTypes: [],
+      responsibilities: [],
+      isCommissionRequest: false,
+      isResponsibleRequest: false,
+    };
+  },
+
+  methods: {
+    getCommission(){
+      OrganisationService.getCommissionTypes().then(
+          (response) => {
+            this.commissionTypes = response.data.map(item => ({title: item['value'], url:'/commissions' }));
+            console.log(this.commissionTypes)
+            this.isCommissionRequest = true;
+          },
+          (error) => {
+            this.request = (
+                    error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+            if (error.response && error.response.status === 403) {
+              EventBus.dispatch("logout");
+            }
+          }
+      );
+    },
+    getResponsibilities(){
+      OrganisationService.getResponsibilities().then(
+          (response) => {
+            this.responsibilities = response.data.map(item => ({title: item['value'], url:'/responsibilities' }));
+            this.isResponsibleRequest = true;
+          },
+          (error) => {
+            this.request =
+                (error.response && error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+            if (error.response && error.response.status === 403) {
+              EventBus.dispatch("logout");
+            }
+          }
+      );
+    }
+  },
+  created(){
+    this.getCommission();
+    this.getResponsibilities();
+  },
+  mounted() {
+    // eslint-disable-next-line no-new
+    // new Collapse(this.$refs.menuCollapse, { toggle: false })
+  },
+};
 </script>
-
-
-
