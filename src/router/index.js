@@ -42,7 +42,7 @@ const routes = [
     path: '/commissions',
     name: 'commissions',
     meta: {layout: 'main', auth: true},
-    component: () => import('../views/Organisation/Departments.vue')
+    component: () => import('../views/Commission.vue')
   },
   {
     path: '/responsibilities',
