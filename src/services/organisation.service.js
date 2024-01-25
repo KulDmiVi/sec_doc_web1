@@ -92,10 +92,13 @@ class OrganisationService {
       return api.get('/commission_members/');
   }
 
-  getResponsibilities(){
+  getRbResponsibilities(){
         return api.get('/ref_books/responsibilities/');
     };
 
+  getResponsibilities(){
+        return api.get('/responsibilities/');
+    };
   postCommission(data){
         return api.post('/commissions/', data)
     };

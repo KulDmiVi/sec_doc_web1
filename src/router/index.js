@@ -45,10 +45,10 @@ const routes = [
     component: () => import('../views/Commission.vue')
   },
   {
-    path: '/responsibilities',
+    path: '/responsibilities/:uid',
     name: 'responsibilities',
     meta: {layout: 'main', auth: true},
-    component: () => import('../views/Organisation/Departments.vue')
+    component: () => import('../views/Responsible.vue')
   },
   {
     path: '/rooms',

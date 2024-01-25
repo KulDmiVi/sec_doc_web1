@@ -57,8 +57,8 @@
             <ul class="flex-column ms-1">
               <router-link
                 v-for="link in responsibilities"
-                class="nav-item"
                 id="resp-submenu"
+                class="nav-item"
                 :key="link.url"
                 tag="li"
                 active-class="active"
@@ -107,7 +107,6 @@ export default {
       OrganisationService.getCommissionTypes().then(
           (response) => {
             this.commissionTypes = response.data.map(item => ({title: item['value'], url:"/commissions/"+item['id'] }));
-            console.log(this.commissionTypes )
             this.isCommissionRequest = true;
           },
           (error) => {
@@ -116,9 +115,9 @@ export default {
       );
     },
     getResponsibilities(){
-      OrganisationService.getResponsibilities().then(
+      OrganisationService.getRbResponsibilities().then(
           (response) => {
-            this.responsibilities = response.data.map(item => ({title: item['value'], url:'/responsibilities' }));
+            this.responsibilities = response.data.map(item => ({title: item['value'], url:'/responsibilities/'+item['id'] }));
             this.isResponsibleRequest = true;
           },
           (error) => {
