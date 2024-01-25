@@ -20,7 +20,7 @@
 <script>
 import TableEditor from '@/components/VueEditortable.vue'
 import OrganisationService from "@/services/organisation.service";
-import EventBus from "@/common/EventBus";
+
 
 export default {
   name: "departments",
@@ -55,17 +55,7 @@ export default {
           (response) => {
             this.request = response.data;
           },
-          (error) => {
-            this.request = (
-                error.response &&
-                error.response.data &&
-                error.response.data.message) ||
-                error.message ||
-                error.toString();
-            if (error.response && error.response.status === 403){
-              EventBus.dispatch("logout");
-            }
-          }
+          (error) => {console.log(error);}
       );
     },
 
@@ -74,54 +64,32 @@ export default {
           (response) => {
             this.request = response.data;
           },
-          (error) => {
-            this.request =
-                (error.response &&
-                 error.response.data &&
-                 error.response.data.message) ||
-                error.message ||
-                error.toString();
-            if (error.response && error.response.status === 403){
-              EventBus.dispatch("logout");
-            }
-          }
+          (error) => {console.log(error);}
       );
     },
 
-  deleteDepartment(data){
+    deleteDepartment(data){
     OrganisationService.deleteDepartment(data.id).then(
         (response) => {
           this.request = response.data;
         },
-        (error) => {
-          this.request =
-              (error.response &&
-                  error.response.data &&
-                  error.response.data.message) ||
-              error.message ||
-              error.toString();
-          if (error.response && error.response.status === 403){
-            EventBus.dispatch("logout");
-          }
-        }
+        (error) => {console.log(error);}
     );
   },
-},
+
+    getDepartments(){
+      OrganisationService.getDepartments().then(
+          (response) => {
+            this.departments = response.data;
+            this.isRequest=true
+          },
+          (error) => {console.log(error);}
+      );
+    },
+  },
 
   created(){
-    OrganisationService.getDepartments().then(
-        (response) => {
-          this.departments = response.data;
-          this.isRequest=true
-        },
-        (error) => {
-          this.departments =
-              (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
-          if (error.response && error.response.status === 403) {
-            EventBus.dispatch("logout");
-          }
-        }
-    );
+      this.getDepartments()
   },
 }
 </script>

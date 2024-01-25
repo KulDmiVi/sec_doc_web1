@@ -80,7 +80,7 @@
 
 <script>
 import OrganisationService from "@/services/organisation.service";
-import EventBus from "@/common/EventBus";
+
 
 export default {
   name: "sidebar",
@@ -103,23 +103,15 @@ export default {
   },
 
   methods: {
-    getCommission(){
+    getCommissionTypes(){
       OrganisationService.getCommissionTypes().then(
           (response) => {
-            this.commissionTypes = response.data.map(item => ({title: item['value'], url:'/commissions' }));
-            console.log(this.commissionTypes)
+            this.commissionTypes = response.data.map(item => ({title: item['value'], url:"/commissions/"+item['id'] }));
+            console.log(this.commissionTypes )
             this.isCommissionRequest = true;
           },
           (error) => {
-            this.request = (
-                    error.response &&
-                    error.response.data &&
-                    error.response.data.message) ||
-                error.message ||
-                error.toString();
-            if (error.response && error.response.status === 403) {
-              EventBus.dispatch("logout");
-            }
+            console.log(error);
           }
       );
     },
@@ -130,20 +122,13 @@ export default {
             this.isResponsibleRequest = true;
           },
           (error) => {
-            this.request =
-                (error.response && error.response.data &&
-                    error.response.data.message) ||
-                error.message ||
-                error.toString();
-            if (error.response && error.response.status === 403) {
-              EventBus.dispatch("logout");
-            }
+            console.log(error);
           }
       );
     }
   },
   created(){
-    this.getCommission();
+    this.getCommissionTypes();
     this.getResponsibilities();
   },
   mounted() {

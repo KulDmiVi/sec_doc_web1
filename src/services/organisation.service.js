@@ -54,7 +54,6 @@ class OrganisationService {
         return api.post('/posts/', data);
   };
 
-
   getRooms(){
       return api.get('/rooms/');
   };
@@ -63,22 +62,20 @@ class OrganisationService {
       return api.post('/rooms/', data);
   };
 
-    getEmployees(){
+  getEmployees(){
         return api.get('/employees/')
     };
 
-  postEmployee(uid, data){
+  postEmployee(data){
       return api.post('/employees/', data)
   };
-
-
 
   getSpheres(){
       return api.get('/ref_books/org_spheres/');
   };
 
   getTypes(){
-      return api.get('/ref_books/org_types/');
+      return api.get('/ref_books/org-types/');
   };
   getFoundationDocument(){
       return api.get('/ref_books/foundation-documents/');
@@ -88,12 +85,23 @@ class OrganisationService {
       return api.get('/ref_books/commission-types/');
   };
 
-    getResponsibilities(){
+  getCommissions(){
+        return api.get('/commissions/');
+    }
+  getCommissionMembers(){
+      return api.get('/commission_members/');
+  }
+
+  getResponsibilities(){
         return api.get('/ref_books/responsibilities/');
     };
 
-  getNames(){
-      return api.get('/ref_books/org_names/');
+  postCommission(data){
+        return api.post('/commissions/', data)
+    };
+
+  postCommissionMember(data){
+      return api.post('/commission_members/', data)
   };
 
 }

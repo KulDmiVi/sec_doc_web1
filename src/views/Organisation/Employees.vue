@@ -1,7 +1,7 @@
 <template>
     <h1>Сотрудники</h1>
     <TableEditor
-        v-if="isRequest && isDepartmentRequest && isPostRequest"
+        v-if="isEmployee && isDepartmentRequest && isPostRequest"
         v-bind:fields="fields"
         v-bind:items="employees"
         @saveRow="addEmployee"
@@ -12,7 +12,6 @@
 <script>
 import TableEditor from '@/components/VueEditortable.vue'
 import OrganisationService from "@/services/organisation.service";
-import EventBus from "@/common/EventBus";
 import AdvancedSelect from '@/components/AdvancedSelect.vue';
 
 export default {
@@ -32,9 +31,10 @@ export default {
           teg: 'select', options: [] },
         { key: "email", label: "email", class: 'form-control', type: 'text', teg: 'input'   },
         { key: "phone", label: "Телефон", class: 'form-control', type: 'text', teg: 'input'   },
+
       ],
       employees: [],
-      isRequest: false,
+      isEmployee: false,
       isDepartmentRequest: false,
       isPostRequest: false
     };
@@ -46,30 +46,22 @@ export default {
   },
 
   methods: {
-    updateEmployee(){console.log("updateEmployee")},
+    updateEmployee(){
+      console.log("updateEmployee")
+    },
 
     addEmployee(data){
-      OrganisationService.postEmployee(data.department, data).then(
+      OrganisationService.postEmployee(data).then(
           (response) => {
             this.request = response.data;
           },
-          (error) => {
-            this.request =
-                (error.response &&
-                    error.response.data &&
-                    error.response.data.message) ||
-                error.message ||
-                error.toString();
-            if (error.response && error.response.status === 403){
-              EventBus.dispatch("logout");
-            }
-          }
+          (error) => {console.log(error);}
       );
     },
 
     getDepartments(){
       OrganisationService.getDepartments().then(
-          (response) => {
+         (response) => {
             this.request = response.data;
             this.request.forEach(element => {
               this.departments.push(
@@ -82,17 +74,7 @@ export default {
             this.fields[4].options = this.departments
             this.isDepartmentRequest = true
           },
-         (error) => {
-           this.request =
-                (error.response &&
-                    error.response.data &&
-                    error.response.data.message) ||
-                error.message ||
-                error.toString();
-            if (error.response && error.response.status === 403) {
-              EventBus.dispatch("logout");
-            }
-          }
+         (error) => {console.log(error);}
       );
     },
 
@@ -100,58 +82,37 @@ export default {
       OrganisationService.getEmployees().then(
           (response) => {
             this.employees = response.data;
-            console.log(this.employees );
-            this.isRequest=true;
-            this.isDepartmentRequest=true;
-            this.isPostRequest=true;
+            this.isEmployee=true;
           },
-          (error) => {
-            this.request =
-                (error.response && error.response.data &&
-                    error.response.data.message) ||
-                error.message ||
-                error.toString();
-            if (error.response && error.response.status === 403) {
-              EventBus.dispatch("logout");
-            }
-          }
+          (error) => {console.log(error);}
       );
-    }
+    },
+
+    getPosts(){
+      let posts = [{id:null, select_name:'Выберети значение'},]
+      OrganisationService.getPosts().then(
+          (response) => {
+            let optionsData = response.data.map(
+                item => ({id: item['id'], select_name:item['name'] })
+            );
+            posts = posts.concat(optionsData);
+            this.fields.forEach((element) => {
+              if(element["key"] === "post"){
+                element['options'] = posts
+                console.log(element['options'])
+              }
+            });
+            this.isPostRequest = true
+          },
+          (error) => {console.log(error);}
+      );
+    },
   },
 
   mounted(){
-    let posts = [{id:null, select_name:'Выберети значение'},]
-    OrganisationService.getPosts().then(
-        (response) => {
-
-          let optionsData = response.data.map(item => ({id: item['id'], select_name:item['name'] }));
-          posts = posts.concat(optionsData);
-          console.log(posts)
-          this.fields.forEach((element) => {
-            if(element["key"] === "post"){
-              element['options'] = posts
-            }
-          });
-          console.log(this.fields);
-          this.isPostRequest = true
-        },
-        (error) => {
-          posts =
-              (error.response &&
-               error.response.data &&
-               error.response.data.message) ||
-               error.message ||
-               error.toString();
-          if (error.response && error.response.status === 403) {
-            EventBus.dispatch("logout");
-          }
-        }
-    );
-  },
-
-  created(){
-    this.getEmployees();
     this.getDepartments();
+    this.getEmployees();
+    this.getPosts();
   },
 }
 </script>

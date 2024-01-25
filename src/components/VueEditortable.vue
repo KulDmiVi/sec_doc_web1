@@ -1,17 +1,15 @@
 <template>
-
   <div>
     <button class="btn btn-primary" @click="addTableRow">Добавить</button>
     <div class="col-md-10 order-md-1">
       <table class="table table-striped">
-    <thead>
-
-    <tr>
-      <th v-for="field in fields" id="{{field.key}}">{{field.label}}</th>
-      <th></th>
-    </tr>
-    </thead>
-    <tbody v-if="table_items">
+        <thead>
+          <tr>
+            <th v-for="field in fields" id="{{field.key}}">{{field.label}}</th>
+            <th></th>
+          </tr>
+        </thead>
+       <tbody v-if="table_items">
     <tr v-for="(item, item_index) in table_items">
       <td v-for="field in fields">
         <input v-bind:class="field.class"
@@ -57,7 +55,6 @@
           <img src="./icons/2931168_garbage_trash_bin_delete_remove.svg" alt="Удалить"  width="20" height="20" >
         </button>
       </td>
-
     </tr>
     </tbody>
   </table>

@@ -1,6 +1,6 @@
 <template>
       <h1>Сведения об организации</h1>
-      <div class="row" v-if="namesData">
+      <div class="row" v-if="isOrganisatonRequest">
         <div class="col-md-10 order-md-1">
           <form class="needs-validation"  @submit.prevent="submit">
             <div class="mb-1">
@@ -96,12 +96,12 @@
 
 <script>
 import UserService from "../../services/organisation.service";
-import EventBus from "../../common/EventBus";
+
 export default {
   name: "organisation",
   data() {
     return {
-      namesData: false,
+      isOrganisatonRequest: false,
       organisation: {},
       names: [],
       types: [],
@@ -117,67 +117,34 @@ export default {
           (response) => {
             this.organisations = response.data;
           },
-          (error) => {
-            this.content =
-                (error.response &&
-                 error.response.data &&
-                 error.response.data.message) ||
-                 error.message ||
-                 error.toString();
-
-            if (error.response && error.response.status === 403) {
-              EventBus.dispatch("logout");
-            }
-          }
+          (error) => {console.log(error);}
       );
-    }
+    },
+
+    getOrganisation(){
+      let user = JSON.parse(localStorage.getItem("user"));
+      UserService.getOrganisation(user.organisation).then(
+          (response) => {
+            this.organisation = response.data;
+            this.isOrganisatonRequest = true;
+          },
+          (error) => {console.log(error);}
+      );
+    },
+
+    getFoundationDocument(){
+      UserService.getFoundationDocument().then(
+          (response) => {
+            this.foundation_document = response.data;
+          },
+          (error) => {console.log(error);}
+      );
+    },
   },
+
   mounted() {
-    let user = JSON.parse(localStorage.getItem("user"));
-    UserService.getOrganisation(user.organisation).then(
-        (response) => {
-          this.organisation = response.data;
-          this.namesData = true;
-        },
-       (error) => {
-          this.content = (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-              error.message ||
-              error.toString();
-       }
-    );
-
-    // UserService.getNames().then(
-    //     (response) => {
-    //       response.data.forEach(
-    //           item => {this.names.push(item.value)
-    //           });
-    //       this.namesData = true
-    //       console.log(this.names)
-    //     });
-
-    // UserService.getTypes().then(
-    //     (response) => {
-    //       response.data.forEach(
-    //           item => {this.types.push(item.value)
-    //           });
-    //     });
-
-    UserService.getFoundationDocument().then(
-        (response) => {
-          response.data.forEach(
-              item => {this.foundation_document.push(item.value)
-              });
-        });
-
-    // UserService.getSpheres().then(
-    //     (response) => {
-    //       response.data.forEach(
-    //           item => {this.spheres.push(item.value)
-    //           });
-    //
-    //     });
+    this.getOrganisation();
+    this.getFoundationDocument();
   },
 };
 
