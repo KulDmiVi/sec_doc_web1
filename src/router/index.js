@@ -39,7 +39,7 @@ const routes = [
     component: () => import('../views/Organisation/Employees.vue')
   },
   {
-    path: '/commissions',
+    path: '/commissions/:uid',
     name: 'commissions',
     meta: {layout: 'main', auth: true},
     component: () => import('../views/Commission.vue')
