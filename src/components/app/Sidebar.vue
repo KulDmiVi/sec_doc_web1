@@ -69,7 +69,16 @@
             </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#"> Объекты КИИ</a>
+
+            <router-link
+                class="nav-item"
+                id="kii"
+                key="/kii_objects"
+                tag="li"
+                active-class="active"
+                to="/kii_objects">
+              <a class="nav-link" href="#"> Объекты КИИ</a>
+             </router-link>
           </li>
         </ul>
       </div>
@@ -94,7 +103,7 @@ export default {
         {title: 'Должности', url: '/posts'},
         {title: 'Помещения', url: '/rooms'},
       ],
-      kii_links: [],
+      kii_links: [ {title: 'Тестовый объект', url: '/kii_object'},],
       commissionTypes: [],
       responsibilities: [],
       isCommissionRequest: false,

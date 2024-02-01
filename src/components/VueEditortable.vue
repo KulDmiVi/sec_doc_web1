@@ -99,7 +99,8 @@ export default {
         property.showAddButton = false;
         property.showUpdateButton = true;
         property.isEdit = !property.isEdit;
-       } else {
+       }
+      else {
         this.$emit("showForm", id);
       }
     },
@@ -114,15 +115,22 @@ export default {
     },
 
     addTableRow() {
-      const newRow = JSON.parse(JSON.stringify(this.empty_record))
-       newRow.property = {
-        showAddButton: true,
-        showEditButton: false,
-        showDeleteButton: true,
-        showUpdateButton: false,
-        isEdit: true
-      };
-      this.table_items.push(newRow);
+      if (!this.enableEditForm) {
+        const newRow = JSON.parse(JSON.stringify(this.empty_record))
+        newRow.property = {
+          showAddButton: true,
+          showEditButton: false,
+          showDeleteButton: true,
+          showUpdateButton: false,
+          isEdit: true
+        };
+        this.table_items.push(newRow);
+      }
+      else {
+          let id = null;
+          this.$emit("showForm", id);
+      }
+
     },
 
     saveTableRow(index) {

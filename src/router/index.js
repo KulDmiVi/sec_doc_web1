@@ -56,8 +56,21 @@ const routes = [
     meta: {layout: 'main', auth: true},
     component: () => import('../views/Organisation/Rooms.vue')
   },
+  {
+    path: '/kii_objects',
+    name: 'kii_objects',
+    meta: {layout: 'main', auth: true},
+    component: () => import('../views/KiiObjects.vue')
 
+  },
 
+  {
+    path: '/kii_object',
+    name: 'kii_object',
+    meta: {layout: 'main', auth: true},
+    component: () => import('../views/KiiObjectForm.vue')
+
+  },
 ]
 
 const router = createRouter({

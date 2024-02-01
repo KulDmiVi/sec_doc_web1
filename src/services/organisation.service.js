@@ -107,6 +107,10 @@ class OrganisationService {
       return api.post('/commission_members/', data)
   };
 
+    getKiiObjects(){
+        return api.get('/kii/kiis/');
+    };
+
 }
 
 export default new OrganisationService();
