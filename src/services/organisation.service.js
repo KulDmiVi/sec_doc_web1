@@ -8,7 +8,9 @@ class OrganisationService {
   getOrganisation(uid) {
       return api.get('/organisations/'+uid+'/');
   };
-
+  addKiiObject(data) {
+      return api.post('/kii/kiis/', data);
+  };
   patchOrganisation(uid, organisation) {
     return api.put(
         '/organisations/'+uid+'/',
@@ -50,7 +52,7 @@ class OrganisationService {
       );
   };
 
-  postPost(uid, data) {
+  postPost(data) {
         return api.post('/posts/', data);
   };
 

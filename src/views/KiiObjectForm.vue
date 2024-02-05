@@ -7,46 +7,53 @@
               <h4>Общие сведения об объекте КИИ</h4>
               <label for="username">Наименование объекта</label>
               <div class="input-group">
-                <input type="text" class="form-control" id="full_name" required=""  v-model="organisation.full_name">
+                <input type="text" class="form-control" id="name" required=""  v-model="kii_object.name">
               </div>
             </div>
             <div class="mb-1" >
               <label for="username">Назначение объекта</label>
               <div class="input-group">
-                <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
+                <input type="text" class="form-control" id="purpose" v-model="kii_object.purpose">
               </div>
             </div>
             <div class="mb-1" >
               <label for="username">Тип объекта</label>
               <div class="input-group">
-                <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
+                <input type="text" class="form-control" id="type" v-model="kii_object.type">
               </div>
             </div>
+            <div class="mb-1" >
+              <label for="username">Сфера (область) деятельности, в которой функционирует объект КИИ</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="field_activity" v-model="kii_object.field_activity">
+              </div>
+            </div>
+            <div class="mb-1" >
+              <label for="username">Архитектура объекта КИИ</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="architecture" v-model="kii_object.architecture">
+              </div>
+            </div>
+            <div class="mb-1" >
+              <label for="username">Адреса размещения объекта КИИ</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="address" v-model="kii_object.address">
+              </div>
+            </div>
+            <div class="mb-1" >
+              <label for="username">Почтовый индекс</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="postcode" v-model="kii_object.postcode">
+              </div>
+            </div>
+            <div class="mb-1" ><br></div>
             <div class="mb-1" >
               <label for="username">Наименование критического процесса, который обеспечивается объектом</label>
               <div class="input-group">
                 <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
               </div>
             </div>
-            <div class="mb-1" >
-              <label for="username">Сфера (область) деятельности, в которой функционирует объект КИИ</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
-              </div>
-            </div>
-            <div class="mb-1" >
-              <label for="username">Архитектура объекта КИИ</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
-              </div>
-            </div>
-            <div class="mb-1" >
 
-              <label for="username">Адреса размещения объекта КИИ</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
-              </div>
-            </div>
             <div class="mb-1" ><br></div>
             <div class="mb-1" >
               <h4>Сведения о взаимодействии объекта КИИ и сетей электросвязи</h4>
@@ -192,6 +199,7 @@ export default {
   data() {
     return {
       isOrganisatonRequest: false,
+      kii_object: {},
       organisation: {},
       names: [],
       types: [],
@@ -201,11 +209,9 @@ export default {
   },
   methods: {
     submit() {
-      let user = JSON.parse(localStorage.getItem("user"))
-      delete  this.organisation.registrator
-      UserService.patchOrganisation(user.organisation, this.organisation).then(
+      UserService.addKiiObject(this.kii_object).then(
           (response) => {
-            this.organisations = response.data;
+            this.kii_object = response.data;
           },
           (error) => {console.log(error);}
       );

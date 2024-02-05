@@ -41,7 +41,7 @@ export default {
 
   methods: {
     showEditForm(row_id){
-      router.push({ path: '/employees' })
+      router.push({ path: '/kii_object' })
       console.log(row_id)
     },
 
