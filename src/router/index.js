@@ -65,7 +65,7 @@ const routes = [
   },
 
   {
-    path: '/kii_object',
+    path: '/kii_object/:uid',
     name: 'kii_object',
     meta: {layout: 'main', auth: true},
     component: () => import('../views/KiiObjectForm.vue')

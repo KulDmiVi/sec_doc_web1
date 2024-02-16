@@ -122,8 +122,8 @@ export default {
     },
 
     getOrganisation(){
-      let user = JSON.parse(localStorage.getItem("user"));
-      UserService.getOrganisation(user.organisation).then(
+      let organisation = localStorage.getItem("organisation");
+      UserService.getOrganisation(organisation).then(
           (response) => {
             this.organisation = response.data;
             this.isOrganisatonRequest = true;

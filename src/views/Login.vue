@@ -28,6 +28,10 @@
 </template>
 
 <script>
+
+import RefBooks from "../services/refbooks.service";
+import VueJwtDecode from "vue-jwt-decode";
+
 export default {
   name: 'login',
   data: () => ({
@@ -44,20 +48,17 @@ export default {
       const formData = {
         username: this.username,
         password: this.password}
-      this.loading = true;
+
       this.$store.dispatch("auth/login", formData).then(
           () => {
-            this.$router.push("/select_organisation");
+            let user_data = JSON.parse(localStorage.getItem('user'));
+            let token_data = VueJwtDecode.decode(user_data.access);
+            localStorage.setItem('organisation',  token_data.organisation_id);
+            new RefBooks();
+            this.$router.push("/organisation/");
+            this.loading = true;
           },
-          (error) => {
-            this.loading = false;
-            this.message =
-                (error.response &&
-                    error.response.data &&
-                    error.response.data.message) ||
-                error.message ||
-                error.toString();
-          }
+          (error) => {console.log(error)}
       );
     },
   },

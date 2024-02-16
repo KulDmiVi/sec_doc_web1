@@ -16,6 +16,7 @@
 <script>
 import TableEditor from '@/components/VueEditortable.vue'
 import OrganisationService from "@/services/organisation.service";
+import RefBooksKii from "@/services/kii_refbooks.service";
 import AdvancedSelect from '@/components/AdvancedSelect.vue';
 import router from "@/router";
 export default {
@@ -25,7 +26,7 @@ export default {
       employees: [],
       fields: [
         { key: "name", label: "Наименование", class: 'form-control', type: 'text', teg: 'input'},
-        { key: "INN", label: "ИНН", class: 'form-control', type: 'text', teg: 'input'},
+        { key: "purpose", label: "Назначение", class: 'form-control', type: 'text', teg: 'input'},
         { key: "type", label: "Тип", class: 'form-control', type: 'text', teg: 'input'},
       ],
       KiiObjectsData: [],
@@ -41,10 +42,13 @@ export default {
 
   methods: {
     showEditForm(row_id){
-      router.push({ path: '/kii_object' })
       console.log(row_id)
-    },
+      router.push({ path: '/kii_object/'+this.KiiObjectsData[row_id].uid  })
 
+    },
+    getKiiRefBooks(){
+      new RefBooksKii()
+    },
     getKiiObjects() {
       OrganisationService.getKiiObjects()
           .then(response => {
@@ -52,8 +56,9 @@ export default {
               this.KiiObjectsData.push(
                   {
                     name: item.name,
-                    INN: item.name,
-                    type: item.name,
+                    purpose: item.purpose,
+                    type: item.type,
+                    uid: item.id,
                   }
 
             ) });
@@ -70,6 +75,7 @@ export default {
 
 
   mounted() {
+    this.getKiiRefBooks();
     this.getKiiObjects();
   },
 };

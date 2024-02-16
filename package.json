@@ -12,9 +12,12 @@
     "babel": "^6.23.0",
     "bootstrap": "^5.2.3",
     "bootstrap-select": "^1.13.18",
+    "bootstrap-vue": "^2.23.1",
     "idle-vue": "^2.0.5",
     "popper.js": "^1.16.1",
     "vue": "^3.2.47",
+    "vue-jwt-decode": "^0.1.0",
+    "vue-multiselect": "^3.0.0-alpha.2",
     "vue-router": "^4.1.6",
     "vuex": "^4.1.0"
   },

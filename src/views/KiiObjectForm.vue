@@ -1,6 +1,6 @@
 <template>
       <h4>Объект КИИ</h4>
-      <div class="row" v-if="isOrganisatonRequest">
+      <div class="row" v-if="isKiiRequest && isKiiElectroRequest">
         <div class="col-md-10 order-md-1">
           <form class="needs-validation"  @submit.prevent="submit">
             <div class="mb-1">
@@ -17,23 +17,27 @@
               </div>
             </div>
             <div class="mb-1" >
-              <label for="username">Тип объекта</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="type" v-model="kii_object.type">
-              </div>
+              <label>Тип объекта</label>
+              <select  class="form-control"  v-model="kii_object.type">
+                <option v-for ="type in kii_types">{{type}}</option>
+              </select>
             </div>
             <div class="mb-1" >
-              <label for="username">Сфера (область) деятельности, в которой функционирует объект КИИ</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="field_activity" v-model="kii_object.field_activity">
-              </div>
+              <label>Сфера (область) деятельности, в которой функционирует объект КИИ</label>
+              <select  class="form-control"  v-model="kii_object.field_activity">
+                <option v-for ="field_activity in kii_field_activities">{{field_activity}}</option>
+              </select>
             </div>
+
             <div class="mb-1" >
               <label for="username">Архитектура объекта КИИ</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="architecture" v-model="kii_object.architecture">
-              </div>
+              <AdvancedSelect
+                  :options="kii_architectures"
+                  :value="kii_object.architecture"
+                  v-model="kii_object.architecture"
+                  class="select"/>
             </div>
+
             <div class="mb-1" >
               <label for="username">Адреса размещения объекта КИИ</label>
               <div class="input-group">
@@ -46,6 +50,8 @@
                 <input type="text" class="form-control" id="postcode" v-model="kii_object.postcode">
               </div>
             </div>
+
+
             <div class="mb-1" ><br></div>
             <div class="mb-1" >
               <label for="username">Наименование критического процесса, который обеспечивается объектом</label>
@@ -54,84 +60,133 @@
               </div>
             </div>
 
-            <div class="mb-1" ><br></div>
+
+
+            <div class="mb-1" ><h4>Сведения о взаимодействии объекта КИИ и сетей электросвязи</h4></div>
             <div class="mb-1" >
-              <h4>Сведения о взаимодействии объекта КИИ и сетей электросвязи</h4>
-              <label for="username">Категория сети электросвязи или сведения об отсутствии взаимодействия объекта КИИ с сетями электросвязи</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
-              </div>
+              <label >Категория сети электросвязи или сведения об отсутствии взаимодействия объекта КИИ с сетями электросвязи</label>
+              <AdvancedSelect
+                  :options="kii_electro_categories"
+                  :value="kii_object_electro.category"
+                  v-model="kii_object_electro.category"
+                  class="select"/>
             </div>
             <div class="mb-1" >
               <label for="username">Наименование оператора связи и (или) провайдера хостинга</label>
               <div class="input-group">
-                <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
+                <input type="text" class="form-control" id="operator" v-model="kii_object_electro.operator">
               </div>
             </div>
             <div class="mb-1" >
-              <label for="username">Цель взаимодействия с сетью электросвязи</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
-              </div>
+              <label >Цель взаимодействия с сетью электросвязи</label>
+              <AdvancedSelect
+                  :options="kii_electro_purposes"
+                  :value="kii_object_electro.purpose"
+                  v-model="kii_object_electro.purpose"
+                  class="select"/>
             </div>
             <div class="mb-1" >
-              <label for="username">Способ взаимодействия с сетью электросвязи с указанием типа доступа к сети электросвязи</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
-              </div>
+              <label >Способ взаимодействия с сетью электросвязи с указанием типа доступа к сети электросвязи</label>
+              <AdvancedSelect
+                  :options="kii_electro_ways"
+                  :value="kii_object_electro.way"
+                  v-model="kii_object_electro.way"
+                  class="select"/>
             </div>
             <div class="mb-1" >
-              <label for="username">Протокол взаимодействия с сетью электросвязи</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
-              </div>
+              <label>Протокол взаимодействия с сетью электросвязи</label>
+              <AdvancedSelect
+                  :options="kii_electro_protocols"
+                  :value="kii_object_electro.protocol"
+                  v-model="kii_object_electro.protocol"
+                  class="select"/>
             </div>
+
+
+
 
             <div class="mb-1" >
               <h4>Сведения о лице, эксплуатирующем объект КИИ</h4>
-              <label for="username">Наименование лица, эксплуатирующего объект</label>
+              <label>Наименование лица, эксплуатирующего объект</label>
               <div class="input-group">
-                <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
+                <input type="text" class="form-control" id="short_name" v-model="kii_object_exploiter.name">
               </div>
             </div>
             <div class="mb-1" >
-              <label for="username">Адрес местонахождения лица, эксплуатирующего объект</label>
+              <label>Адрес местонахождения лица, эксплуатирующего объект</label>
               <div class="input-group">
-                <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
-              </div>
-            </div>
-            <div class="mb-1" >
-              <label for="username">Элемент (компонент) объекта КИИ, который эксплуатируется лицом</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
-              </div>
-            </div>
-            <div class="mb-1" >
-              <label for="username">ИНН</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
-              </div>
-            </div>
-            <div class="mb-1" >
-              <label for="username">КПП</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
+                <input type="text" class="form-control" id="short_name" v-model="kii_object_exploiters1.adress">
               </div>
             </div>
 
+              <label>Элемент (компонент) объекта КИИ, который эксплуатируется лицом</label>
+              <TableEditor
+                  v-bind:fields="ComponentsFields"
+                  v-bind:items="ComponentsData"
+                  v-bind:enableEditForm=false
+                  @saveRow="addComponent"
+                  @updateRow="updateComponent"
+                  @deleteRow="deleteComponent"
+              />
+
+            <div class="mb-1" >
+              <label>ИНН</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="short_name" v-model="kii_object_exploiter.INN">
+              </div>
+            </div>
+            <div class="mb-1" >
+              <label>КПП</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="short_name" v-model="kii_object_exploiter.KPP">
+              </div>
+            </div>
+
+
+
+
+
             <div class="mb-1" >
               <h4>Сведения о программных и программно-аппаратных средствах, используемых на объекте КИИ</h4>
-              <label for="username">Наименование общесистемного программного обеспечения</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
-              </div>
             </div>
-            <div class="mb-1" >
-              <label for="username">Наименование прикладного программного обеспечения</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
-              </div>
+
+
+            <div>
+              <label>Наименование общесистемного программного обеспечения</label>
+              <multiselect
+                  v-model="os_value"
+                  label="name"
+                  track-by="code"
+                  placeholder="Выберите из списка или добавьте свой вариант"
+                  selectLabel = "Нажмите enter для выбора"
+                  selectedLabel = "Выбран"
+                  deselectLabel = "Нажмите enter для удаления"
+                  :options="os_options"
+                  :multiple="true"
+                  :taggable="true"
+                  @tag="addOs">
+              </multiselect>
             </div>
+
+              <div>
+                <label>Наименование прикладного программного обеспечения</label>
+                <multiselect
+                    v-model="software_value"
+                    label="name"
+                    track-by="code"
+                    placeholder="Выберите из списка или добавьте свой вариант"
+                    selectLabel = "Нажмите enter для выбора"
+                    selectedLabel = "Выбран"
+                    deselectLabel = "Нажмите enter для удаления"
+                    :options="software_options"
+                    :multiple="true"
+                    :taggable="true"
+                    @tag="addSoftware">
+                </multiselect>
+              </div>
+
+
+
             <div class="mb-1" >
               <label for="username">Применяемые средства защиты информации</label>
               <div class="input-group">
@@ -193,54 +248,267 @@
 
 <script>
 import UserService from "../services/organisation.service";
+import AdvancedSelect from '@/components/AdvancedSelect.vue';
+import TableEditor from '@/components/VueEditortable.vue';
+import Multiselect from 'vue-multiselect'
+import 'vue-multiselect/dist/vue-multiselect.css'
 
 export default {
   name: "organisation",
+  components: {
+    AdvancedSelect,
+    TableEditor,
+    Multiselect
+  },
   data() {
     return {
+      os_value: [   ],
+      os_options: [
+          { name: 'Windows71', code: 'Windows7' },
+          { name: 'CentOS1', code: 'CentOS' },
+          { name: 'AltLinux1', code: 'AltLinux' }
+      ],
+
+
+      software_value: [  ],
+      software_options: [  ],
       isOrganisatonRequest: false,
+      isKiiRequest: false,
+      isKiiElectroRequest: false,
+      isKiiObjectExploiterRequest: false,
+
       kii_object: {},
-      organisation: {},
-      names: [],
-      types: [],
-      foundation_document: [],
+      kii_object_electro: {},
+      kii_object_exploiter: {},
+
+      //test
+      kii_object_exploiters1: {},
+
+      kii_object_exploiters_components:{},
+
+      kii_architectures: [],
+      kii_field_activities: [],
+      kii_types:[],
+      kii_electro_categories:[],
+      kii_electro_purposes:[],
+      kii_electro_ways:[],
+      kii_electro_protocols:[],
+
+      ComponentsFields: [
+         { key: "name", label: "Наименование", class: 'form-control', type: 'text', teg: 'input'},
+         { key: "count", label: "Количество", class: 'form-control', type: 'text', teg: 'input'},
+      ],
+      ComponentsData: [
+        {name: "центр обработки данных", count: '1'},
+        {name: "серверное оборудование", count: '1'},
+        {name: "автоматизированные рабочие места", count: '1'},
+        {name: "средства беспроводного доступа", count: '1'},
+        {name: "технологическое оборудование", count: '1'},
+        {name: "производственное оборудование (исполнительные устройства)", count: '1'},
+        {name: "иные элементы (компоненты)", count: '1'},
+      ],
+
+
+
+
+      organisation:{},
       spheres: [],
+
+
+
     };
   },
+
+
   methods: {
     submit() {
-      UserService.addKiiObject(this.kii_object).then(
+      this.saveKiiObject();
+      this.saveKiiObjectElectro();
+      this.saveKiiObjectExploiter();
+    },
+
+    addOs (newTag) {
+      const tag = {
+        name: newTag,
+        code: newTag
+      }
+      this.os_options.push(tag)
+      this.os_value.push(tag)
+    },
+
+    addSoftware (newTag) {
+      const tag = {
+        name: newTag,
+        code: newTag
+      }
+      this.software_options.push(tag)
+      this.software_value.push(tag)
+    },
+
+    getKiiObject(){
+      UserService.getKiiObject(this.$route.params.uid).then(
           (response) => {
             this.kii_object = response.data;
+            this.isKiiRequest = true;
           },
           (error) => {console.log(error);}
       );
     },
 
-    getOrganisation(){
-      let user = JSON.parse(localStorage.getItem("user"));
-      UserService.getOrganisation(user.organisation).then(
+    getKiiObjectElectro(){
+      UserService.getKiiObjectElectro().then(
           (response) => {
-            this.organisation = response.data;
-            this.isOrganisatonRequest = true;
+            this.kii_object_electro = response.data[0];
+            if(this.kii_object_electro.length == 0){
+              this.kii_object_electro = {}
+            }
+            this.isKiiElectroRequest = true;
           },
           (error) => {console.log(error);}
       );
     },
 
-    getFoundationDocument(){
-      UserService.getFoundationDocument().then(
+    getKiiObjectExploiter(){
+      UserService.getKiiObjectExploiter().then(
           (response) => {
-            this.foundation_document = response.data;
+            this.kii_object_exploiter = response.data[0];
+            if(this.kii_object_exploiter.length == 0){
+              this.kii_object_exploiter = {}
+            }
+            this.isKiiObjectExploiterRequest = true;
           },
           (error) => {console.log(error);}
       );
     },
+
+    saveKiiObject(){
+      if (this.kii_object.id){
+        UserService.updateKiiObject(this.kii_object).then(
+            (response) => {
+              if(response.length > 0) {
+                this.kii_object = response.data;
+                return this.kii_object.id
+              }
+            },
+            (error) => {console.log(error);}
+        );
+      }
+      else{
+        UserService.addKiiObject(this.kii_object).then(
+            (response) => {
+              this.kii_object = response.data;
+              return this.kii_object.id;
+            },
+            (error) => {console.log(error)}
+        )
+      }
+
+    },
+
+    saveKiiObjectElectro(){
+      if(this.kii_object_electro.id){
+        UserService.updateKiiObjectElectro(this.kii_object_electro).then(
+            (response) => {
+              console.log(response.data);
+            },
+            (error) => {console.log(error);}
+        );
+      }
+      else{
+        this.kii_object_electro.kii = this.kii_object.id;
+        UserService.addKiiObjectElectro(this.kii_object_electro).then(
+            (response) => {
+               console.log(response.data);
+            },
+            (error) => {console.log(error);}
+        );
+      }
+      },
+
+    saveKiiObjectExploiter(){
+      if(this.kii_object_exploiter.id){
+        UserService.updateKiiObjectExploiter(this.kii_object_exploiter).then(
+            (response) => {
+              console.log(response.data);
+            },
+            (error) => {console.log(error);}
+        );
+      }
+      else{
+        this.kii_object_exploiter.kii = this.kii_object.id;
+        UserService.addKiiObjectExploiter(this.kii_object_exploiter).then(
+            (response) => {
+              console.log(response.data);
+            },
+            (error) => {console.log(error);}
+        );
+      }
+    },
+
+    getKiiArchitectures(){
+      let temp_data = JSON.parse(localStorage.getItem("architectures"))
+      for (var key in temp_data) {
+        this.kii_architectures.push(temp_data[key].value);
+      }
+    },
+
+    getKiitypes(){
+      let temp_data = JSON.parse(localStorage.getItem("types"))
+      for (var key in temp_data) {
+        this.kii_types.push(temp_data[key].value);
+      }
+    },
+
+    getKiiElectroCategories(){
+      let temp_data = JSON.parse(localStorage.getItem("electro-categories"))
+      for (var key in temp_data) {
+          this.kii_electro_categories.push(temp_data[key].value);
+      }
+    },
+
+    getKiiElectroPurposes(){
+      let temp_data = JSON.parse(localStorage.getItem("electro-purposes"))
+      for (var key in temp_data) {
+        this.kii_electro_purposes.push(temp_data[key].value);
+      }
+    },
+
+    getKiiElectroWays(){
+      let temp_data = JSON.parse(localStorage.getItem("electro-ways"))
+      for (var key in temp_data) {
+        this.kii_electro_ways.push(temp_data[key].value);
+      }
+    },
+
+    getKiiElectroProtocols(){
+        let temp_data = JSON.parse(localStorage.getItem("electro-protocols"))
+        for (var key in temp_data) {
+          this.kii_electro_protocols.push(temp_data[key].value);
+        }
+    },
+
+    getKiiFieldActivities(){
+      let temp_data = JSON.parse(localStorage.getItem("field-activities"))
+      for (var key in temp_data) {
+        this.kii_field_activities.push(temp_data[key].value);
+      }
+      console.log(this.kii_field_activities)
+    },
+
   },
 
   mounted() {
-    this.getOrganisation();
-    this.getFoundationDocument();
+    this.getKiitypes();
+    this.getKiiFieldActivities();
+    this.getKiiArchitectures();
+    this.getKiiElectroCategories();
+    this.getKiiElectroPurposes();
+    this.getKiiElectroWays();
+    this.getKiiElectroProtocols();
+    this.getKiiObjectElectro();
+    this.getKiiObject();
+    this.getKiiObjectExploiter();
+
   },
 };
 

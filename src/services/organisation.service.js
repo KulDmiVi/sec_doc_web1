@@ -8,9 +8,7 @@ class OrganisationService {
   getOrganisation(uid) {
       return api.get('/organisations/'+uid+'/');
   };
-  addKiiObject(data) {
-      return api.post('/kii/kiis/', data);
-  };
+
   patchOrganisation(uid, organisation) {
     return api.put(
         '/organisations/'+uid+'/',
@@ -112,6 +110,44 @@ class OrganisationService {
     getKiiObjects(){
         return api.get('/kii/kiis/');
     };
+
+    getKiiObject(uid){
+        return api.get('/kii/kiis/'+uid);
+    };
+
+    updateKiiObject( data){
+        return api.patch('/kii/kiis/'+data.id+'/', data)
+
+    };
+
+    addKiiObject(data) {
+        return api.post('/kii/kiis/'+data.id+'/', data);
+    };
+
+
+    getKiiObjectElectro(){
+        return api.get('/kii/electro/');
+    };
+    getKiiObjectExploiter(){
+        return api.get('/kii/exploiters/');
+    };
+
+    updateKiiObjectElectro(data){
+        return api.patch('/kii/electro/'+data.id+'/', data)
+    };
+
+    addKiiObjectElectro(data){
+        return api.post('/kii/electro/', data);
+    };
+
+    updateKiiObjectExploiter(data){
+        return api.patch('/kii/exploiters/'+data.id+'/', data)
+    };
+
+    addKiiObjectExploiter(data){
+        return api.post('/kii/exploiters/', data);
+    };
+
 
 }
 

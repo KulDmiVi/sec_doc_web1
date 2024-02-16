@@ -101,7 +101,7 @@ export default {
         property.isEdit = !property.isEdit;
        }
       else {
-        this.$emit("showForm", id);
+        this.$emit("showForm", index);
       }
     },
 

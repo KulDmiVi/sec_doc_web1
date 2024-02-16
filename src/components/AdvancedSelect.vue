@@ -1,5 +1,5 @@
 <template>
-  <div class="custom-select col-md-10"  v-click-outside= "hideWidget">
+  <div class="custom-select"  v-click-outside= "hideWidget">
     <div class="selected form-control" :class="{open: open }" @click="open = !open">
       <input type="text" class="form-control"  v-model="selected" ref="myInput" @input="onInput"  style="border:none;" />
     </div>
@@ -35,11 +35,13 @@ export default {
   },
 
   methods: {
+
     hideWidget(){
       if(this.open === true){
         this.open=false
       }
     },
+
     onSelect(option) {
       this.setOption(option);
       this.$refs.myInput.focus();
@@ -48,28 +50,24 @@ export default {
     setOption(option) {
       this.selected = option;
       this.open = false;
-      this.$emit('input', this.selected);
-      this.$emit('change', this.selected);
     },
 
-    onInput(event) {
-      const value = event.target.value;
-      this.$emit('update:modelValue', value);
-      const option = this.options.find(option => option.toLowerCase().startsWith(value.toLowerCase()));
-      if (option) {
-        this.setOption(option);
-      }
-
-    },
+   // onInput(event) {
+      //const value = event.target.value;
+      //const option = this.options.find(option => option.toLowerCase().startsWith(value.toLowerCase()));
+      //if (option) {
+      //  this.setOption(option);
+     // }
+    //},
   },
 
+
   watch: {
-    value(newValue, oldValue) {
-      if (newValue !== oldValue) {
-        this.selected = newValue;
+    selected(newValue, oldValue) {
+      if (newValue!== oldValue) {
+        this.$emit('update:modelValue', this.selected);
       }
     },
-
 
 
   },
@@ -79,9 +77,16 @@ export default {
 <style scoped>
 .custom-select .items {
   position: absolute;
+  z-index: 9998;
   background-color: white;
+  border: 2px solid black;
 }
+.select-item {
+  position: relative;
+  z-index: 9999; /* или любое достаточно высокое значение */
+  background-color: white;
 
+}
 .custom-select .items .select-item:hover {
   background-color: cornflowerblue;
 }
