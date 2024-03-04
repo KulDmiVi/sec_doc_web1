@@ -1,35 +1,35 @@
+
 <template>
       <h4>Объект КИИ</h4>
       <div class="row" v-if="isKiiRequest && isKiiElectroRequest">
         <div class="col-md-10 order-md-1">
           <form class="needs-validation"  @submit.prevent="submit">
-            <div class="mb-1">
-              <h4>Общие сведения об объекте КИИ</h4>
+            <h4 @click="basic_info_open = !basic_info_open"> + Общие сведения об объекте КИИ </h4>
+            <div :class="{selectHide: basic_info_open}">
               <label for="username">Наименование объекта</label>
               <div class="input-group">
                 <input type="text" class="form-control" id="name" required=""  v-model="kii_object.name">
               </div>
             </div>
-            <div class="mb-1" >
+            <div class="mb-1"  :class="{selectHide: basic_info_open}">
               <label for="username">Назначение объекта</label>
               <div class="input-group">
                 <input type="text" class="form-control" id="purpose" v-model="kii_object.purpose">
               </div>
             </div>
-            <div class="mb-1" >
+            <div class="mb-1" :class="{selectHide: basic_info_open}">
               <label>Тип объекта</label>
               <select  class="form-control"  v-model="kii_object.type">
                 <option v-for ="type in kii_types">{{type}}</option>
               </select>
             </div>
-            <div class="mb-1" >
+            <div class="mb-1"  :class="{selectHide: basic_info_open}">
               <label>Сфера (область) деятельности, в которой функционирует объект КИИ</label>
               <select  class="form-control"  v-model="kii_object.field_activity">
                 <option v-for ="field_activity in kii_field_activities">{{field_activity}}</option>
               </select>
             </div>
-
-            <div class="mb-1" >
+            <div class="mb-1" :class="{selectHide: basic_info_open}">
               <label for="username">Архитектура объекта КИИ</label>
               <AdvancedSelect
                   :options="kii_architectures"
@@ -37,23 +37,19 @@
                   v-model="kii_object.architecture"
                   class="select"/>
             </div>
-
-            <div class="mb-1" >
+            <div class="mb-1" :class="{selectHide: basic_info_open}">
               <label for="username">Адреса размещения объекта КИИ</label>
               <div class="input-group">
                 <input type="text" class="form-control" id="address" v-model="kii_object.address">
               </div>
             </div>
-            <div class="mb-1" >
+            <div class="mb-1" :class="{selectHide: basic_info_open}">
               <label for="username">Почтовый индекс</label>
               <div class="input-group">
                 <input type="text" class="form-control" id="postcode" v-model="kii_object.postcode">
               </div>
             </div>
-
-
-            <div class="mb-1" ><br></div>
-            <div class="mb-1" >
+            <div class="mb-1" :class="{selectHide: basic_info_open}">
               <label for="username">Наименование критического процесса, который обеспечивается объектом</label>
               <div class="input-group">
                 <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
@@ -62,8 +58,8 @@
 
 
 
-            <div class="mb-1" ><h4>Сведения о взаимодействии объекта КИИ и сетей электросвязи</h4></div>
-            <div class="mb-1" >
+          <h4 @click="electro_info_open = !electro_info_open">+ Сведения о взаимодействии объекта КИИ и сетей электросвязи</h4>
+            <div class="mb-1" :class="{selectHide: electro_info_open}">
               <label >Категория сети электросвязи или сведения об отсутствии взаимодействия объекта КИИ с сетями электросвязи</label>
               <AdvancedSelect
                   :options="kii_electro_categories"
@@ -71,21 +67,21 @@
                   v-model="kii_object_electro.category"
                   class="select"/>
             </div>
-            <div class="mb-1" >
+            <div class="mb-1" :class="{selectHide: electro_info_open}">
               <label for="username">Наименование оператора связи и (или) провайдера хостинга</label>
               <div class="input-group">
                 <input type="text" class="form-control" id="operator" v-model="kii_object_electro.operator">
               </div>
             </div>
-            <div class="mb-1" >
+            <div class="mb-1" :class="{selectHide: electro_info_open}">
               <label >Цель взаимодействия с сетью электросвязи</label>
               <AdvancedSelect
                   :options="kii_electro_purposes"
                   :value="kii_object_electro.purpose"
                   v-model="kii_object_electro.purpose"
                   class="select"/>
-            </div>
-            <div class="mb-1" >
+            </div >
+            <div class="mb-1" :class="{selectHide: electro_info_open}">
               <label >Способ взаимодействия с сетью электросвязи с указанием типа доступа к сети электросвязи</label>
               <AdvancedSelect
                   :options="kii_electro_ways"
@@ -93,7 +89,7 @@
                   v-model="kii_object_electro.way"
                   class="select"/>
             </div>
-            <div class="mb-1" >
+            <div class="mb-1" :class="{selectHide: electro_info_open}">
               <label>Протокол взаимодействия с сетью электросвязи</label>
               <AdvancedSelect
                   :options="kii_electro_protocols"
@@ -103,22 +99,20 @@
             </div>
 
 
-
-
-            <div class="mb-1" >
-              <h4>Сведения о лице, эксплуатирующем объект КИИ</h4>
+            <h4 @click="exploiter_info_open = !exploiter_info_open">+ Сведения о лице, эксплуатирующем объект КИИ</h4>
+            <div class="mb-1" :class="{selectHide: exploiter_info_open}">
               <label>Наименование лица, эксплуатирующего объект</label>
               <div class="input-group">
                 <input type="text" class="form-control" id="short_name" v-model="kii_object_exploiter.name">
               </div>
             </div>
-            <div class="mb-1" >
+            <div class="mb-1" :class="{selectHide: exploiter_info_open}">
               <label>Адрес местонахождения лица, эксплуатирующего объект</label>
               <div class="input-group">
                 <input type="text" class="form-control" id="short_name" v-model="kii_object_exploiters1.adress">
               </div>
             </div>
-
+            <div class="mb-1" :class="{selectHide: exploiter_info_open}">
               <label>Элемент (компонент) объекта КИИ, который эксплуатируется лицом</label>
               <TableEditor
                   v-bind:fields="ComponentsFields"
@@ -128,30 +122,22 @@
                   @updateRow="updateComponent"
                   @deleteRow="deleteComponent"
               />
-
-            <div class="mb-1" >
+            </div>
+            <div class="mb-1"  :class="{selectHide: exploiter_info_open}">
               <label>ИНН</label>
               <div class="input-group">
                 <input type="text" class="form-control" id="short_name" v-model="kii_object_exploiter.INN">
               </div>
             </div>
-            <div class="mb-1" >
+            <div class="mb-1" :class="{selectHide: exploiter_info_open}">
               <label>КПП</label>
               <div class="input-group">
                 <input type="text" class="form-control" id="short_name" v-model="kii_object_exploiter.KPP">
               </div>
             </div>
 
-
-
-
-
-            <div class="mb-1" >
-              <h4>Сведения о программных и программно-аппаратных средствах, используемых на объекте КИИ</h4>
-            </div>
-
-
-            <div>
+            <h4 @click="tools_info_open = !tools_info_open">+ Сведения о программных и программно-аппаратных средствах, используемых на объекте КИИ</h4>
+            <div :class="{selectHide: tools_info_open}">
               <label>Наименование общесистемного программного обеспечения</label>
               <multiselect
                   v-model="os_value"
@@ -167,8 +153,7 @@
                   @tag="addOs">
               </multiselect>
             </div>
-
-              <div>
+            <div :class="{selectHide: tools_info_open}">
                 <label>Наименование прикладного программного обеспечения</label>
                 <multiselect
                     v-model="software_value"
@@ -183,15 +168,17 @@
                     :taggable="true"
                     @tag="addSoftware">
                 </multiselect>
-              </div>
-
-
-
-            <div class="mb-1" >
-              <label for="username">Применяемые средства защиты информации</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
-              </div>
+            </div>
+            <div class="mb-1" :class="{selectHide: tools_info_open}">
+              <label>Сведения о средстве защиты информации</label>
+              <TableEditor
+                  v-bind:fields="SecurityFields"
+                  v-bind:items="SecurityData"
+                  v-bind:enableEditForm=false
+                  @saveRow="addSecurity"
+                  @updateRow="updateSecurity"
+                  @deleteRow="deleteSecurity"
+              />
             </div>
 
 
@@ -236,6 +223,14 @@
                 <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
               </div>
             </div>
+            <div class="mb-1" >
+              <TreeView
+                  class="item"
+                  :item_childs="kii_incident_damages"
+                  @changeCheck1='changeSelectedDamage1'>
+
+              </TreeView>
+            </div>
             <div class="row">
               <div class="offset-md-10">
                 <button class="btn btn-primary btn-lg btn-block" type="submit">Сохранить изменения</button>
@@ -247,9 +242,11 @@
 </template>
 
 <script>
+
 import UserService from "../services/organisation.service";
 import AdvancedSelect from '@/components/AdvancedSelect.vue';
 import TableEditor from '@/components/VueEditortable.vue';
+import TreeView from '@/components/TreeView.vue';
 import Multiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.css'
 
@@ -258,10 +255,16 @@ export default {
   components: {
     AdvancedSelect,
     TableEditor,
-    Multiselect
+    Multiselect,
+    TreeView
   },
   data() {
     return {
+      basic_info_open: false,
+      electro_info_open: false,
+      exploiter_info_open: false,
+      tools_info_open: false,
+
       os_value: [   ],
       os_options: [
           { name: 'Windows71', code: 'Windows7' },
@@ -269,7 +272,7 @@ export default {
           { name: 'AltLinux1', code: 'AltLinux' }
       ],
 
-
+      selected_damage: [],
       software_value: [  ],
       software_options: [  ],
       isOrganisatonRequest: false,
@@ -293,7 +296,7 @@ export default {
       kii_electro_purposes:[],
       kii_electro_ways:[],
       kii_electro_protocols:[],
-
+      kii_incident_damages: {},
       ComponentsFields: [
          { key: "name", label: "Наименование", class: 'form-control', type: 'text', teg: 'input'},
          { key: "count", label: "Количество", class: 'form-control', type: 'text', teg: 'input'},
@@ -308,19 +311,37 @@ export default {
         {name: "иные элементы (компоненты)", count: '1'},
       ],
 
+      SecurityFields: [
+        { key: "type", label: "Тип", class: 'form-control', type: 'text', teg: 'input'},
+        { key: "name", label: "Наименование", class: 'form-control', type: 'text', teg: 'input'},
+        { key: "sertificate", label: "Сведения о сертификате", class: 'form-control', type: 'text', teg: 'input'},
+        { key: "serial_number", label: "Серийный номер (заводской номер)", class: 'form-control', type: 'text', teg: 'input'},
+        { key: "number", label: "Номер знака соответствия", class: 'form-control', type: 'text', teg: 'input'},
+      ],
+      SecurityData: [
+        {type: "Средство защиты информации от несанкционированного доступа",
+          name: 'bdhsbhjkhjkhgjkhkhkh',
+          sertificate: '10.12.2024 выдан edkmwfhjiwerqgiofutjmc bjhzgd',
+          serial_number: "serial_number",
+          number: "1234657890"
 
+        },
+
+      ],
 
 
       organisation:{},
       spheres: [],
-
-
-
     };
   },
 
 
   methods: {
+
+    changeSelectedDamage1() {
+      console.log("change_selected_damage");
+    },
+
     submit() {
       this.saveKiiObject();
       this.saveKiiObjectElectro();
@@ -382,6 +403,7 @@ export default {
     },
 
     saveKiiObject(){
+      console.log(this.selected_damage)
       if (this.kii_object.id){
         UserService.updateKiiObject(this.kii_object).then(
             (response) => {
@@ -409,7 +431,7 @@ export default {
       if(this.kii_object_electro.id){
         UserService.updateKiiObjectElectro(this.kii_object_electro).then(
             (response) => {
-              console.log(response.data);
+              console.log('123');
             },
             (error) => {console.log(error);}
         );
@@ -418,7 +440,7 @@ export default {
         this.kii_object_electro.kii = this.kii_object.id;
         UserService.addKiiObjectElectro(this.kii_object_electro).then(
             (response) => {
-               console.log(response.data);
+               console.log('123');
             },
             (error) => {console.log(error);}
         );
@@ -429,7 +451,7 @@ export default {
       if(this.kii_object_exploiter.id){
         UserService.updateKiiObjectExploiter(this.kii_object_exploiter).then(
             (response) => {
-              console.log(response.data);
+              console.log('123');
             },
             (error) => {console.log(error);}
         );
@@ -438,7 +460,7 @@ export default {
         this.kii_object_exploiter.kii = this.kii_object.id;
         UserService.addKiiObjectExploiter(this.kii_object_exploiter).then(
             (response) => {
-              console.log(response.data);
+              console.log('123');
             },
             (error) => {console.log(error);}
         );
@@ -492,12 +514,24 @@ export default {
       for (var key in temp_data) {
         this.kii_field_activities.push(temp_data[key].value);
       }
-      console.log(this.kii_field_activities)
+
     },
+
+    getKiiIncidentDamages(){
+      this.kii_incident_damages = JSON.parse(localStorage.getItem("incident-damages"))
+    },
+
+    makeFolder(item) {
+        console.log('132')
+    },
+    addItem(item) {
+      console.log('123')
+    }
 
   },
 
   mounted() {
+
     this.getKiitypes();
     this.getKiiFieldActivities();
     this.getKiiArchitectures();
@@ -508,8 +542,15 @@ export default {
     this.getKiiObjectElectro();
     this.getKiiObject();
     this.getKiiObjectExploiter();
+    this.getKiiIncidentDamages();
 
   },
 };
 
 </script>
+
+<style scoped>
+.selectHide {
+  display: none;
+}
+</style>

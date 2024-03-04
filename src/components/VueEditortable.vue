@@ -92,6 +92,13 @@ export default {
 
 
   methods: {
+
+    changeSelectedDamage1() {
+      console.log("change_selected_damage1");
+    },
+
+
+
     editTableRow(index) {
       const { property, id } = this.table_items[index];
       if (!this.enableEditForm) {
@@ -167,6 +174,9 @@ export default {
   },
 
   mounted() {
+
+
+
     this.empty_record = {
       data: Object.fromEntries(this.fields.map(field => [field.key, field.default])),
       property: {

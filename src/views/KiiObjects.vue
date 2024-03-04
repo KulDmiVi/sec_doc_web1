@@ -41,6 +41,11 @@ export default {
   },
 
   methods: {
+
+    changeSelectedDamage1() {
+      console.log("change_selected_damage1");
+    },
+
     showEditForm(row_id){
       console.log(row_id)
       router.push({ path: '/kii_object/'+this.KiiObjectsData[row_id].uid  })

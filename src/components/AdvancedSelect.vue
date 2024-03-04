@@ -3,7 +3,7 @@
     <div class="selected form-control" :class="{open: open }" @click="open = !open">
       <input type="text" class="form-control"  v-model="selected" ref="myInput" @input="onInput"  style="border:none;" />
     </div>
-    <div class="items form-control" :class="{selectHide: !open }">
+    <div class="items form-control" :class="{selectHide: !open}">
       <div v-if="options.length !== 0" class="select-item" v-for="(option, i) of options" :key="i" @click="onSelect(option)">
         {{option}}
       </div>
@@ -68,8 +68,6 @@ export default {
         this.$emit('update:modelValue', this.selected);
       }
     },
-
-
   },
 };
 </script>

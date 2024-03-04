@@ -18,6 +18,8 @@ export default class RefBooksKii {
             'technical-measures',
             'organizational-measures',
             'incident-damages',
+            'security-threats',
+            'violator-categories'
         ]
         for (index = 0; index < this.refBooks.length; index++) {
             console.log(this.refBooks[index]);
