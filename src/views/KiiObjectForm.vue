@@ -11,7 +11,7 @@
                 <input type="text" class="form-control" id="name" required=""  v-model="kii_object.name">
               </div>
             </div>
-            <div class="mb-1"  :class="{selectHide: basic_info_open}">
+            <div class="mb-1" :class="{selectHide: basic_info_open}">
               <label for="username">Назначение объекта</label>
               <div class="input-group">
                 <input type="text" class="form-control" id="purpose" v-model="kii_object.purpose">
@@ -23,7 +23,7 @@
                 <option v-for ="type in kii_types">{{type}}</option>
               </select>
             </div>
-            <div class="mb-1"  :class="{selectHide: basic_info_open}">
+            <div class="mb-1" :class="{selectHide: basic_info_open}">
               <label>Сфера (область) деятельности, в которой функционирует объект КИИ</label>
               <select  class="form-control"  v-model="kii_object.field_activity">
                 <option v-for ="field_activity in kii_field_activities">{{field_activity}}</option>
@@ -123,7 +123,7 @@
                   @deleteRow="deleteComponent"
               />
             </div>
-            <div class="mb-1"  :class="{selectHide: exploiter_info_open}">
+            <div class="mb-1" :class="{selectHide: exploiter_info_open}">
               <label>ИНН</label>
               <div class="input-group">
                 <input type="text" class="form-control" id="short_name" v-model="kii_object_exploiter.INN">
@@ -181,55 +181,57 @@
               />
             </div>
 
-
-            <div class="mb-1" >
-              <h4>Сведения об угрозах безопасности информации и категориях нарушителей в отношении объекта КИИ</h4>
+            <h4 @click="treats_info_open = !treats_info_open">+ Сведения об угрозах безопасности информации и категориях нарушителей в отношении объекта КИИ</h4>
+            <div class="mb-1" :class="{selectHide: treats_info_open}">
               <label for="username">Категория нарушителя:</label>
               <div class="input-group">
                 <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
               </div>
             </div>
-            <div class="mb-1" >
+            <div class="mb-1" :class="{selectHide: treats_info_open}">
               <label for="username">Перечень основных угроз безопасности информации:</label>
               <div class="input-group">
                 <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
               </div>
             </div>
 
-            <div class="mb-1" >
-              <h4>Возможные последствия в случае возникновения компьютерных инцидентов</h4>
+            <h4 @click="damages_info_open = !damages_info_open">+ Возможные последствия в случае возникновения компьютерных инцидентов</h4>
+            <div class="mb-1" :class="{selectHide: damages_info_open}">
               <label for="username">Типы компьютерных инцидентов, которые могут произойти в результате реализации угроз безопасности информации, в том числе вследствие целенаправленных компьютерных атак</label>
                 <div class="input-group">
                   <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
                 </div>
             </div>
-            <div class="mb-1" >
+            <div class="mb-1" :class="{selectHide: damages_info_open}" >
               <label for="username">Ущерб, который может быть причинен в результате возникновения компьютерных инцидентов, или обоснование отсутствия возможности причинения ущерба вследствие компьютерных инцидентов</label>
               <div class="input-group">
                 <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
               </div>
             </div>
 
-            <div class="mb-1" >
-              <h4>Организационные и технические меры, применяемые для обеспечения безопасности значимого объекта критической информационной инфраструктуры</h4>
+            <h4 @click="measures_info_open = !measures_info_open">+ Организационные и технические меры, применяемые для обеспечения безопасности значимого объекта критической информационной инфраструктуры</h4>
+            <div class="mb-1" :class="{selectHide: measures_info_open}">
               <label for="username">рганизационные меры, применяемые для обеспечения безопасности значимого объекта критической информационной инфраструктуры</label>
                 <div class="input-group">
                   <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
                 </div>
             </div>
-            <div class="mb-1" >
+            <div class="mb-1" :class="{selectHide: measures_info_open}">
               <label for="username">Технические меры, применяемые для обеспечения безопасности значимого объекта критической информационной инфраструктуры</label>
               <div class="input-group">
                 <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
               </div>
             </div>
-            <div class="mb-1" >
-              <TreeView
-                  class="item"
-                  :item_childs="kii_incident_damages"
-                  @changeCheck1='changeSelectedDamage1'>
 
-              </TreeView>
+
+
+            <div class="mb-1" >
+              <h4> TEST TREEE</h4>
+
+              <TreeItem
+                 v-bind:nodes = "kii_incident_damages"
+              />
+
             </div>
             <div class="row">
               <div class="offset-md-10">
@@ -246,7 +248,7 @@
 import UserService from "../services/organisation.service";
 import AdvancedSelect from '@/components/AdvancedSelect.vue';
 import TableEditor from '@/components/VueEditortable.vue';
-import TreeView from '@/components/TreeView.vue';
+
 import Multiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.css'
 
@@ -256,14 +258,16 @@ export default {
     AdvancedSelect,
     TableEditor,
     Multiselect,
-    TreeView
   },
   data() {
     return {
-      basic_info_open: false,
-      electro_info_open: false,
-      exploiter_info_open: false,
-      tools_info_open: false,
+      basic_info_open: true,
+      electro_info_open: true,
+      exploiter_info_open: true,
+      tools_info_open: true,
+      treats_info_open: true,
+      damages_info_open: true,
+      measures_info_open: true,
 
       os_value: [   ],
       os_options: [
@@ -524,10 +528,6 @@ export default {
     makeFolder(item) {
         console.log('132')
     },
-    addItem(item) {
-      console.log('123')
-    }
-
   },
 
   mounted() {

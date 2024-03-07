@@ -6,6 +6,7 @@
       v-bind:fields="fields"
       v-bind:items="KiiObjectsData"
       v-bind:enableEditForm=true
+      @changeCheck1="changeSelectedDamage1"
       @showForm="showEditForm"
       @saveRow="addKiiObject"
       @updateRow="updateKiiObject"

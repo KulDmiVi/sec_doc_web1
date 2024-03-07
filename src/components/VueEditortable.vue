@@ -92,13 +92,6 @@ export default {
 
 
   methods: {
-
-    changeSelectedDamage1() {
-      console.log("change_selected_damage1");
-    },
-
-
-
     editTableRow(index) {
       const { property, id } = this.table_items[index];
       if (!this.enableEditForm) {

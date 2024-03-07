@@ -3,7 +3,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from "./router"
 import store from './store'
-
+import TreeItem from '@/components/TreeView.vue'
 import "bootstrap/dist/css/bootstrap.css"
 import "bootstrap-select/dist/css/bootstrap-select.css"
 import "bootstrap/dist/js/bootstrap.js"
@@ -23,6 +23,7 @@ app
     .use(store)
     .mount('#app')
 
+app.component('TreeItem', TreeItem)
 app.directive('click-outside', {
     mounted(element, { value }){
         element.ClickOutside = function (event){
