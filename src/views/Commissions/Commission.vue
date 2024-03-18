@@ -77,7 +77,7 @@ export default {
       );
     },
     getCommissionMembers() {
-      this.commission_uid = this.$route.params.commission_uid
+
       this.commissionsMembers = [];
       OrganisationService.getCommissionMembers().then(
           (response) => {
@@ -94,8 +94,7 @@ export default {
     },
 
     addCommissionMember(data) {
-      let commissions_id = this.$route.params.commission_uid
-      data['commission'] = commissions_id;
+      data['commission'] = this.commission_uid;
       OrganisationService.postCommissionMember(data)
     },
 
@@ -114,11 +113,28 @@ export default {
         (error) => {console.log(error)}
     )
     },
+
+    getCommissions(){
+      OrganisationService.getCommissions().then(
+          (response) => {
+            console.log(this.$route.params.commission_uid)
+            response.data.forEach((item) => {
+              if (item.commission_type === this.$route.params.commission_uid){
+                this.commission_uid = item.id
+                this.getCommissionMembers();
+              }
+            })
+
+
+          },
+          (error) => {console.log(error);}
+      );
+    }
   },
 
 
   mounted() {
-    this.getCommissionMembers();
+    this.getCommissions();
     this.getEmployees();
   },
 };

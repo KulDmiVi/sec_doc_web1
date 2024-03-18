@@ -1,18 +1,16 @@
 <template>
   <h4>Коммисии</h4>
-  <div v-for="value, key in commissionTypes">
 
-
-    <template v-for="value1, key1 in commissions[key]">
-      <button style="border:none;"  @click="editCommission(value1.id)">
-        <img src="/src/components/icons/2931178_creative_edit_pencil_change_draw_design_pen.svg" alt="Редактировать"  width="20" height="20">
-      </button>
-      {{value}}
-
-    </template>
-
-
-  </div>
+  <table>
+    <tr v-for="(type, key) in commissionTypes">
+      <td>{{type}}</td>
+      <td>
+        <button style="border:none;"  @click="editCommission(key)">
+          <img src="/src/components/icons/2931178_creative_edit_pencil_change_draw_design_pen.svg" alt="Редактировать"  width="20" height="20">
+        </button>
+      </td>
+    </tr>
+  </table>
 </template>
 
 <script>
@@ -49,29 +47,11 @@ export default {
       router.push({ path: '/commission/'+id})
     },
 
-    getCommissions(){
-      OrganisationService.getCommissions().then(
-          (response) => {
-            var response_data, index, commission_item=[];
-            response_data = response.data;
-            for (index = 0; index < response_data.length; index++){
-               commission_item = this.commissions[response_data[index].commission_type];
-              if (commission_item === undefined){
-                this.commissions[response_data[index].commission_type] = [response_data[index]];
-              } else {
-                this.commissions[response_data[index].commission_type].push([response_data[index]])
-              }
-            }
-            this.isCommissionsRequest = true;
-          },
-          (error) => {console.log(error);}
-      );
-    }
+
   },
 
   mounted() {
     this.getCommissionTypes();
-    this.getCommissions();
   },
 }
 </script>
