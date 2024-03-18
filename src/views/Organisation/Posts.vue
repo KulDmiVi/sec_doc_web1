@@ -7,6 +7,7 @@
         v-bind:enableEditForm=false
         @saveRow="addPost"
         @updateRow="updatePost"
+        @deleteRow="deletePost"
     />
 </template>
 
@@ -77,15 +78,20 @@ export default {
     getPosts(){
       OrganisationService.getPosts().then(
           (response) => {
-            console.log('123');
-            console.log(response.data);
             this.posts = response.data;
             this.isPostRequest = true;
           },
           (error) => {console.log(error);}
       );
     },
+
+  deletePost(data){
+    OrganisationService.deletePost(data.id).then(
+        (response) => {console.log(response);},
+        (error) => {console.log(error);}
+    );
   },
+},
 
   mounted(){
     this.getrbPosts()

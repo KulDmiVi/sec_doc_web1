@@ -54,6 +54,10 @@ class OrganisationService {
         return api.post('/posts/', data);
   };
 
+  deletePost(uid) {
+      return api.delete('/posts/'+uid+'/');
+  };
+
   getRooms(){
       return api.get('/rooms/');
   };
