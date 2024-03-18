@@ -6,6 +6,7 @@
         v-bind:items="employees"
         @saveRow="addEmployee"
         @updateRow="updateEmployee"
+        @deleteRow="deleteEmployee"
     />
 </template>
 
@@ -46,8 +47,16 @@ export default {
   },
 
   methods: {
-    updateEmployee(){
-      console.log("updateEmployee")
+    updateEmployee(data){
+      OrganisationService.updateEmployee(data).then(
+          response => {
+            console.log(response);
+            this.getEmployees();
+          },
+          error => {
+            console.log(error);
+          }
+      )
     },
 
     addEmployee(data){
@@ -107,6 +116,15 @@ export default {
           (error) => {console.log(error);}
       );
     },
+
+    deleteEmployee(data){
+      OrganisationService.deleteEmployee(data.id).then(
+          (response) => {
+            this.request = response.data;
+          },
+          (error) => {console.log(error);}
+      );
+    }
   },
 
   mounted(){

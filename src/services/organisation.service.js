@@ -74,16 +74,14 @@ class OrganisationService {
       return api.post('/employees/', data)
   };
 
-  getSpheres(){
-      return api.get('/ref_books/org_spheres/');
+  updateEmployee(data){
+      return api.patch('/employees/'+data.id+'/', data)
   };
 
-  getTypes(){
-      return api.get('/ref_books/org-types/');
+  deleteEmployee(uid){
+      return api.delete('/employees/'+uid+'/');
   };
-  getFoundationDocument(){
-      return api.get('/ref_books/foundation-documents/');
-  };
+
 
   getCommissionTypes(){
       return api.get('/ref_books/commission-types/');
@@ -114,9 +112,9 @@ class OrganisationService {
   getResponsibilities(){
         return api.get('/responsibilities/');
     };
-    postResponsibilities(data){
+  postResponsibilities(data){
         return api.post('/responsibilities/', data);
-    };
+  };
   postCommission(data){
         return api.post('/commissions/', data)
     };

@@ -44,9 +44,8 @@ export default {
 
   methods: {
     addPost(data){
-      let current_user = JSON.parse(localStorage.getItem("user"))
-      data['organisation'] = current_user.organisation
-      OrganisationService.postPost(current_user.organisation, data).then(
+      data['organisation'] = JSON.parse(localStorage.getItem("user"))
+      OrganisationService.postPost(data).then(
           (response) => {this.request = response.data;},
           (error) => {console.log(error);}
       );
