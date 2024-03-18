@@ -27,49 +27,28 @@
             </ul>
           </li>
           <li class="nav-item">
-            <a class="btn btn-primary active"
-               data-bs-toggle="collapse"
-               href="#commission-submenu"
-               aria-expanded="false"
-               aria-controls="commission-submenu">
-              Комиссии
-            </a>
-            <ul class="flex-column ms-1" >
-              <router-link
-                v-for="link in commissionTypes"
-                id="commission-submenu"
+            <router-link
                 class="nav-item"
-                :key="link.url"
+                id="commissions"
+                key="/commissions"
                 tag="li"
                 active-class="active"
-                :to="link.url"
-                :exact="link.exact">
-                <a class="nav-link" href="#">{{link.title}}</a>
-              </router-link>
-            </ul>
+                to="/commissions">
+              <a class="nav-link" href="#">Коммиссии</a>
+            </router-link>
           </li>
           <li class="nav-item">
-            <a class="btn btn-primary active"
-               data-bs-toggle="collapse"
-               href="#resp-submenu"
-               aria-expanded="false"
-               aria-controls="resp-submenu">Ответственные</a>
-            <ul class="flex-column ms-1">
-              <router-link
-                v-for="link in responsibilities"
-                id="resp-submenu"
+            <router-link
                 class="nav-item"
-                :key="link.url"
+                id="responsibilities"
+                key="/responsibilities"
                 tag="li"
                 active-class="active"
-                :to="link.url"
-                :exact="link.exact">
-                <a class="nav-link" href="#">{{link.title}}</a>
-              </router-link>
-            </ul>
+                to="/responsibilities">
+              <a class="nav-link" href="#">Ответственные</a>
+            </router-link>
           </li>
           <li class="nav-item">
-
             <router-link
                 class="nav-item"
                 id="kii"
@@ -80,17 +59,23 @@
               <a class="nav-link" href="#"> Объекты КИИ</a>
              </router-link>
           </li>
+          <li class="nav-item">
+            <router-link
+                class="nav-item"
+                id="docs"
+                key="/documents"
+                tag="li"
+                active-class="active"
+                to="/documents">
+              <a class="nav-link" href="#">Документы</a>
+            </router-link>
+          </li>
         </ul>
       </div>
     </div>
 </template>
 
-
-
 <script>
-import OrganisationService from "@/services/organisation.service";
-
-
 export default {
   name: "sidebar",
 
@@ -103,45 +88,9 @@ export default {
         {title: 'Должности', url: '/posts'},
         {title: 'Помещения', url: '/rooms'},
       ],
-      kii_links: [ {title: 'Тестовый объект', url: '/kii_object'},],
-      commissionTypes: [],
-      responsibilities: [],
-      isCommissionRequest: false,
-      isResponsibleRequest: false,
+
     };
   },
 
-  methods: {
-    getCommissionTypes(){
-      OrganisationService.getCommissionTypes().then(
-          (response) => {
-            this.commissionTypes = response.data.map(item => ({title: item['value'], url:"/commissions/"+item['id'] }));
-            this.isCommissionRequest = true;
-          },
-          (error) => {
-            console.log(error);
-          }
-      );
-    },
-    getResponsibilities(){
-      OrganisationService.getRbResponsibilities().then(
-          (response) => {
-            this.responsibilities = response.data.map(item => ({title: item['value'], url:'/responsibilities/'+item['id'] }));
-            this.isResponsibleRequest = true;
-          },
-          (error) => {
-            console.log(error);
-          }
-      );
-    }
-  },
-  created(){
-    this.getCommissionTypes();
-    this.getResponsibilities();
-  },
-  mounted() {
-    // eslint-disable-next-line no-new
-    // new Collapse(this.$refs.menuCollapse, { toggle: false })
-  },
 };
 </script>

@@ -48,9 +48,7 @@ export default {
     },
 
     showEditForm(row_id){
-      console.log(row_id)
       router.push({ path: '/kii_object/'+this.KiiObjectsData[row_id].uid  })
-
     },
     getKiiRefBooks(){
       new RefBooksKii()

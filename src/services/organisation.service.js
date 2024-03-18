@@ -92,12 +92,26 @@ class OrganisationService {
       return api.get('/commission_members/');
   }
 
+  updateCommissionMember(data)
+  {
+      return api.patch(
+          '/commission_members/'+data.id+'/',
+          data
+      );
+  }
+
+  deleteCommissionMember(uid) {
+        return api.delete('/commission_members/'+uid+'/');
+  };
   getRbResponsibilities(){
         return api.get('/ref_books/responsibilities/');
     };
 
   getResponsibilities(){
         return api.get('/responsibilities/');
+    };
+    postResponsibilities(data){
+        return api.post('/responsibilities/', data);
     };
   postCommission(data){
         return api.post('/commissions/', data)
@@ -107,12 +121,19 @@ class OrganisationService {
       return api.post('/commission_members/', data)
   };
 
-    getKiiObjects(){
-        return api.get('/kii/kiis/');
-    };
+  getKiiObjects(){
+      return api.get('/kii/kiis/');
+  };
 
-    getKiiObject(uid){
-        return api.get('/kii/kiis/'+uid);
+  getKiiObject(uid){
+      return api.get('/kii/kiis/'+uid);
+  };
+
+  getKiiProcess(uid){
+      return api.get('/kii/processes/'+uid);
+  };
+    getKiiProcesses(){
+        return api.get('/kii/processes/');
     };
 
     updateKiiObject( data){

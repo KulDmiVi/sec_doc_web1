@@ -12,7 +12,7 @@ const routes = [
     path: '/select_organisation',
     name: 'select_organisation',
     meta: {layout: 'empty', auth: true},
-    component: () => import('../views/SelectOrganisation.vue')
+    component: () => import('../views/Organisation/SelectOrganisation.vue')
   },
   {
     path: '/organisation/',
@@ -39,28 +39,47 @@ const routes = [
     component: () => import('../views/Organisation/Employees.vue')
   },
   {
-    path: '/commissions/:uid',
+    path: '/commissions',
     name: 'commissions',
     meta: {layout: 'main', auth: true},
-    component: () => import('../views/Commission.vue')
+    component: () => import('../views/Commissions/Commissions.vue')
   },
+
   {
-    path: '/responsibilities/:uid',
+    path: '/commission/:commission_uid',
+    name: 'commission',
+    meta: {layout: 'main', auth: true},
+    component: () => import('../views/Commissions/Commission.vue')
+  },
+
+
+  {
+    path: '/responsibilities/',
     name: 'responsibilities',
     meta: {layout: 'main', auth: true},
-    component: () => import('../views/Responsible.vue')
+    component: () => import('../views/Responsibilities/Responsibilities.vue')
   },
+
+  {
+    path: '/responsible/:responsible_type',
+    name: 'responsible',
+    meta: {layout: 'main', auth: true},
+    component: () => import('../views/Responsibilities/Responsible.vue')
+  },
+
   {
     path: '/rooms',
     name: 'rooms',
     meta: {layout: 'main', auth: true},
     component: () => import('../views/Organisation/Rooms.vue')
   },
+
+
   {
     path: '/kii_objects',
     name: 'kii_objects',
     meta: {layout: 'main', auth: true},
-    component: () => import('../views/KiiObjects.vue')
+    component: () => import('../views/KII/KiiObjects.vue')
 
   },
 
@@ -68,8 +87,21 @@ const routes = [
     path: '/kii_object/:uid',
     name: 'kii_object',
     meta: {layout: 'main', auth: true},
-    component: () => import('../views/KiiObjectForm.vue')
+    component: () => import('../views/KII/KiiObjectForm.vue')
+  },
 
+  {
+    path: '/kii_process/:uid',
+    name: 'kii_process',
+    meta: {layout: 'main', auth: true},
+    component: () => import('../views/KII/KiiProcessForm.vue')
+  },
+
+  {
+    path: '/documents',
+    name: 'documents',
+    meta: {layout: 'main', auth: true},
+    component: () => import('../views/Documents/Documets.vue')
   },
 ]
 

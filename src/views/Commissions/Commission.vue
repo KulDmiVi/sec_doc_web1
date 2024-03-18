@@ -1,0 +1,126 @@
+<template>
+
+  <label>Члены комиссии</label>
+  <TableEditor
+      v-if="isMembersRequest && isEmployeeRequest"
+      v-bind:fields="fields"
+      v-bind:items="commissionsMembers"
+      v-bind:enableEditForm= false
+      @saveRow="addCommissionMember"
+      @updateRow="updateCommissionMember"
+      @deleteRow="deleteCommissionMember"
+  />
+
+
+</template>
+
+<script>
+import TableEditor from '@/components/VueEditortable.vue'
+import OrganisationService from "@/services/organisation.service";
+
+export default {
+  name: "commission",
+  data() {
+    return {
+      employees: [],
+      fields: [
+        {
+          key: "role",
+          default: '',
+          label: "Роль",
+          class: 'form-control',
+          type: 'text',
+          teg: 'select',
+          options: [{id: 'chairman', select_name: 'Председатель'},
+                    {id: 'deputy', select_name: 'Заместитель'},
+                    {id: 'member', select_name: 'Член комиссии'},]
+        },
+         {
+           key: "member",
+          default: '',
+          label: "Член",
+          class: 'form-control',
+          type: 'text',
+          teg: 'select',
+          options: []
+        },
+      ],
+
+
+      commissionsMembers: [],
+      commission_uid: null,
+      commissionType: null,
+      isMembersRequest: false,
+      isEmployeeRequest: false
+    };
+  },
+
+  components: {
+    TableEditor,
+  },
+
+  methods: {
+    getEmployees() {
+      OrganisationService.getEmployees().then(
+          (response) => {
+            response.data.forEach((item) => {
+              this.fields[1].options.push(
+                  {
+                    id: item.id,
+                    select_name: item.surname + ' ' + item.name + ' ' + item.patronymic
+                  }
+              );
+            });
+            this.isEmployeeRequest = true;
+          },
+          (error) => {console.log(error);}
+      );
+    },
+    getCommissionMembers() {
+      this.commission_uid = this.$route.params.commission_uid
+      this.commissionsMembers = [];
+      OrganisationService.getCommissionMembers().then(
+          (response) => {
+
+            response.data.forEach((item) =>{
+              if (item.commission === this.commission_uid){
+                       this.commissionsMembers.push(item)
+              }
+            });
+            this.isMembersRequest = true;
+          },
+          (error) => { console.log(error);}
+      )
+    },
+
+    addCommissionMember(data) {
+      let commissions_id = this.$route.params.commission_uid
+      data['commission'] = commissions_id;
+      OrganisationService.postCommissionMember(data)
+    },
+
+    updateCommissionMember(data) {
+      console.log(data)
+      OrganisationService.updateCommissionMember(data).then(
+          (response) => {console.log(response)},
+          (error) => {console.log(error)}
+      )
+    },
+
+    deleteCommissionMember(data){
+      console.log(data.id)
+      OrganisationService.deleteCommissionMember(data.id).then(
+        (response) => {console.log(response)},
+        (error) => {console.log(error)}
+    )
+    },
+  },
+
+
+  mounted() {
+    this.getCommissionMembers();
+    this.getEmployees();
+  },
+};
+
+</script>

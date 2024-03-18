@@ -13,10 +13,12 @@
     <tr v-for="(item, item_index) in table_items">
       <td v-for="field in fields">
         <input v-bind:class="field.class"
-               v-if="item.property['isEdit'] && field['teg']==='input' &&  field['list']"
+               v-if="item.property['isEdit'] && field['teg']==='input' && field['list']"
                :type="field.type"
                v-model="item.data[field.key]"
-               :list = "field['list']">
+               :list = "field['list']"
+        >
+
         <datalist v-if="item.property['isEdit'] && field['teg']==='input' &&  field['list']"
                   :id="field['list']">
           <option v-for="option in field.options" :value="option.id">{{option.name}}</option>
@@ -25,11 +27,13 @@
         <input v-else-if ="item.property['isEdit'] && field['teg']==='input'"
                :class="field.class"
                :type="field.type"
-               v-model="item.data[field.key]">
+               v-model="item.data[field.key]"
+        >
 
         <select v-else-if="item.property['isEdit'] && field['teg']==='select'"
                 class="form-select"
-                v-model="item.data[field.key]">
+                v-model="item.data[field.key]"
+        >
           <option v-for = 'option in field.options' v-bind:value="option.id" >{{option.select_name}}</option>
         </select>
         <AdvancedSelect
@@ -39,7 +43,18 @@
             v-model="item.data[field.key]"
             class="select"
         />
-        <span v-else>{{item.data[field.key]}}</span>
+
+        <template v-else >
+          <span v-if="field.options && field['teg']==='select'">
+            <template v-for = 'option in field.options'>
+              <template v-if="option.id===item.data[field.key]">
+                {{option.select_name}}
+              </template>
+            </template>
+          </span>
+          <span v-else>{{item.data[field.key]}}</span>
+        </template>
+
       </td>
       <td id="action">
         <button v-show="item.property['showUpdateButton']" style="border:none;"  @click="updateTableRow(item_index)">

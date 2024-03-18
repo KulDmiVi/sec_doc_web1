@@ -1,7 +1,7 @@
 
 <template>
       <h4>Объект КИИ</h4>
-      <div class="row" v-if="isKiiRequest && isKiiElectroRequest">
+      <div class="row" v-if="isKiiRequest && isKiiElectroRequest && isKiiProcessRequest">
         <div class="col-md-10 order-md-1">
           <form class="needs-validation"  @submit.prevent="submit">
             <h4 @click="basic_info_open = !basic_info_open"> + Общие сведения об объекте КИИ </h4>
@@ -22,6 +22,18 @@
               <select  class="form-control"  v-model="kii_object.type">
                 <option v-for ="type in kii_types">{{type}}</option>
               </select>
+            </div>
+
+            <div class="mb-1" :class="{selectHide: basic_info_open}">
+              <label for="username">Наименование критического процесса, который обеспечивается объектом</label>
+
+              <div class="input-group">
+                <button style="border:none;" @click="showKiiProcessEditForm">
+                  <img v-if="kii_process.length" src="/src/components/icons/2931178_creative_edit_pencil_change_draw_design_pen.svg" alt="Редактировать" width="20" height="20">
+                  <img v-if="!kii_process.length" src="/src/components/icons/2931155_attach_new_maximize_add_create_plus.svg" alt="Вставить" width="20" height="20">
+                </button>
+               <input class="form-control" disabled v-model="kii_process.name">
+              </div>
             </div>
             <div class="mb-1" :class="{selectHide: basic_info_open}">
               <label>Сфера (область) деятельности, в которой функционирует объект КИИ</label>
@@ -49,12 +61,7 @@
                 <input type="text" class="form-control" id="postcode" v-model="kii_object.postcode">
               </div>
             </div>
-            <div class="mb-1" :class="{selectHide: basic_info_open}">
-              <label for="username">Наименование критического процесса, который обеспечивается объектом</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
-              </div>
-            </div>
+
 
 
 
@@ -229,7 +236,11 @@
               <h4> TEST TREEE</h4>
 
               <TreeItem
-                 v-bind:nodes = "kii_incident_damages"
+                  v-for="node_item in kii_incident_damages"
+                  v-bind:node_item="node_item"
+                  v-bind:nodes="node_item.childs"
+                  v-bind:checked_nodes="selected_damage"
+                  @TEST1="TESTCHEK"
               />
 
             </div>
@@ -245,12 +256,13 @@
 
 <script>
 
-import UserService from "../services/organisation.service";
+import UserService from "../../services/organisation.service";
 import AdvancedSelect from '@/components/AdvancedSelect.vue';
 import TableEditor from '@/components/VueEditortable.vue';
 
 import Multiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.css'
+import router from "@/router";
 
 export default {
   name: "organisation",
@@ -269,6 +281,14 @@ export default {
       damages_info_open: true,
       measures_info_open: true,
 
+      // ответы от апи
+      isKiiRequest: false,
+      isKiiProcessRequest: false,
+      isOrganisatonRequest: false,
+      isKiiElectroRequest: false,
+      isKiiObjectExploiterRequest: false,
+
+
       os_value: [   ],
       os_options: [
           { name: 'Windows71', code: 'Windows7' },
@@ -277,18 +297,17 @@ export default {
       ],
 
       selected_damage: [],
-      software_value: [  ],
-      software_options: [  ],
-      isOrganisatonRequest: false,
-      isKiiRequest: false,
-      isKiiElectroRequest: false,
-      isKiiObjectExploiterRequest: false,
+      software_value: [],
+      software_options: [],
 
-      kii_object: {},
+
+      kii_object: {}, // объект кии
+      kii_process: {}, // критический процесс
+      kii_process_incident_damages: {}, //
       kii_object_electro: {},
       kii_object_exploiter: {},
 
-      //test
+
       kii_object_exploiters1: {},
 
       kii_object_exploiters_components:{},
@@ -306,33 +325,19 @@ export default {
          { key: "count", label: "Количество", class: 'form-control', type: 'text', teg: 'input'},
       ],
       ComponentsData: [
-        {name: "центр обработки данных", count: '1'},
-        {name: "серверное оборудование", count: '1'},
-        {name: "автоматизированные рабочие места", count: '1'},
-        {name: "средства беспроводного доступа", count: '1'},
-        {name: "технологическое оборудование", count: '1'},
-        {name: "производственное оборудование (исполнительные устройства)", count: '1'},
-        {name: "иные элементы (компоненты)", count: '1'},
+        { key: "name", label: "Наименование", class: 'form-control', type: 'text', teg: 'input'},
+        { key: "count", label: "Количество", class: 'form-control', type: 'text', teg: 'input'},
       ],
 
       SecurityFields: [
-        { key: "type", label: "Тип", class: 'form-control', type: 'text', teg: 'input'},
         { key: "name", label: "Наименование", class: 'form-control', type: 'text', teg: 'input'},
-        { key: "sertificate", label: "Сведения о сертификате", class: 'form-control', type: 'text', teg: 'input'},
-        { key: "serial_number", label: "Серийный номер (заводской номер)", class: 'form-control', type: 'text', teg: 'input'},
-        { key: "number", label: "Номер знака соответствия", class: 'form-control', type: 'text', teg: 'input'},
+        { key: "code", label: "Количество", class: 'form-control', type: 'text', teg: 'input'},
       ],
       SecurityData: [
-        {type: "Средство защиты информации от несанкционированного доступа",
-          name: 'bdhsbhjkhjkhgjkhkhkh',
-          sertificate: '10.12.2024 выдан edkmwfhjiwerqgiofutjmc bjhzgd',
-          serial_number: "serial_number",
-          number: "1234657890"
-
-        },
-
+        { name: 'Windows71', code: 'Windows7' },
+        { name: 'CentOS1', code: 'CentOS' },
+        { name: 'AltLinux1', code: 'AltLinux' }
       ],
-
 
       organisation:{},
       spheres: [],
@@ -342,8 +347,8 @@ export default {
 
   methods: {
 
-    changeSelectedDamage1() {
-      console.log("change_selected_damage");
+    TESTCHEK(){
+      console.log(this.selected_damage)
     },
 
     submit() {
@@ -371,6 +376,7 @@ export default {
     },
 
     getKiiObject(){
+      /* Получение данных об объекте КИИ */
       UserService.getKiiObject(this.$route.params.uid).then(
           (response) => {
             this.kii_object = response.data;
@@ -379,6 +385,23 @@ export default {
           (error) => {console.log(error);}
       );
     },
+
+    showKiiProcessEditForm() {
+      router.push({ path: '/kii_process/'+this.kii_process.uid  })
+    },
+
+    getKiiProcess(){
+      /* Получение данных об процессе объекта КИИ */
+      UserService.getKiiProcesses().then(
+          (response) => {
+            this.kii_process = response.data;
+            console.log(this.kii_process)
+            this.isKiiProcessRequest = true;
+          },
+          (error) => {console.log(error);}
+      );
+    },
+
 
     getKiiObjectElectro(){
       UserService.getKiiObjectElectro().then(
@@ -407,7 +430,6 @@ export default {
     },
 
     saveKiiObject(){
-      console.log(this.selected_damage)
       if (this.kii_object.id){
         UserService.updateKiiObject(this.kii_object).then(
             (response) => {
@@ -525,14 +547,12 @@ export default {
       this.kii_incident_damages = JSON.parse(localStorage.getItem("incident-damages"))
     },
 
-    makeFolder(item) {
-        console.log('132')
-    },
   },
 
   mounted() {
 
     this.getKiitypes();
+    this.getKiiProcess();
     this.getKiiFieldActivities();
     this.getKiiArchitectures();
     this.getKiiElectroCategories();
