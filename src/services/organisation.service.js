@@ -9,9 +9,9 @@ class OrganisationService {
       return api.get('/organisations/'+uid+'/');
   };
 
-  patchOrganisation(uid, organisation) {
+  patchOrganisation(organisation) {
     return api.put(
-        '/organisations/'+uid+'/',
+        '/organisations/'+organisation.id+'/',
         organisation
     );
   };

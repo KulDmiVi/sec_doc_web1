@@ -26,32 +26,54 @@
               </div>
             </div>
             <div class="mb-1">
-              <label for="org_names_choice">Условное наименование</label>
-              <input  class="form-control" list="organisation-names" id="org_names_choice" name="org_names_choice" v-model="organisation.business_entity">
+              <label for="org_names_choice">Хозяйствующий субъект</label>
+              <input  class="form-control"
+                      list="organisation-names"
+                      id="org_names_choice"
+                      name="org_names_choice"
+                      v-model="organisation.business_entity"
+              >
               <datalist id="organisation-names">
-                <option v-for ="org_name in names" :value = org_name></option>
+                <option
+                    v-for ="org_name in names"
+                    :value = org_name>
+                </option>
               </datalist>
             </div>
             <div class="mb-1">
               <label for="org_types_choice">Тип организации</label>
-              <input  class="form-control" list="organisation-types" id="org_types_choice" name="org_types_choice"  v-model="organisation.type">
+              <input
+                  class="form-control"
+                  list="organisation-types"
+                  id="org_types_choice"
+                  name="org_types_choice"
+                  v-model="organisation.type">
               <datalist id="organisation-types">
                 <option v-for ="org_type in types" :value = org_type></option>
               </datalist>
             </div>
             <div class="mb-1">
               <label for="org_foundation_document">Учредительный документ</label>
-              <input  class="form-control" list="foundation-document" id="org_foundation_document" name="org_foundation_document"
-                      v-model="organisation.foundation_document">
+              <input
+                  class="form-control"
+                  list="foundation-document"
+                  id="org_foundation_document"
+                  name="org_foundation_document"
+                  v-model="organisation.foundation_document">
               <datalist id="foundation-document">
-                <option v-for ="foundation_doc in foundation_document" :value = foundation_doc></option>
+                <option v-for ="foundation_doc in foundation_documents" :value = foundation_doc></option>
               </datalist>
             </div>
             <div class="mb-1">
               <label for="org_sphere">Сфера деятельности организации</label>
-              <input  class="form-control" list="org-sphere" id="org_sphere" name="org_sphere" v-model="organisation.field_activity">
+              <input
+                  class="form-control"
+                  list="org-sphere"
+                  id="org_sphere"
+                  name="org_sphere"
+                  v-model="organisation.field_activity">
               <datalist id="org-sphere">
-                <option v-for ="sphere in spheres" :value = sphere></option>
+                <option v-for ="field_activity in field_activities" :value = field_activity></option>
               </datalist>
             </div>
             <div class="mb-1">
@@ -84,9 +106,9 @@
                 <input type="text" class="form-control" id="chief"  v-model="organisation.chief">
               </div>
             </div>
-            <div class="row">
+            <div class="mb-1">
               <div class="offset-md-10">
-                <button class="btn btn-primary btn-lg btn-block" type="submit">Сохранить изменения</button>
+                <button class="btn btn-primary btn-lg btn-block" type="submit">Сохранить</button>
               </div>
             </div>
           </form>
@@ -105,15 +127,14 @@ export default {
       organisation: {},
       names: [],
       types: [],
-      foundation_document: [],
-      spheres: [],
+      foundation_documents: [],
+      field_activities: [],
+
     };
   },
   methods: {
     submit() {
-      let user = JSON.parse(localStorage.getItem("user"))
-      delete  this.organisation.registrator
-      UserService.patchOrganisation(user.organisation, this.organisation).then(
+      UserService.patchOrganisation(this.organisation).then(
           (response) => {
             this.organisations = response.data;
           },
@@ -132,19 +153,43 @@ export default {
       );
     },
 
-    getFoundationDocument(){
-      UserService.getFoundationDocument().then(
-          (response) => {
-            this.foundation_document = response.data;
-          },
-          (error) => {console.log(error);}
-      );
+    getOrgNames(){
+      let temp_data = JSON.parse(localStorage.getItem("org-names"));
+
+      temp_data.forEach((item) => {
+        this.names.push(item.value);
+      });
+    },
+
+    getOrgTypes(){
+      let temp_data = JSON.parse(localStorage.getItem("org-types"));
+      temp_data.forEach((item) => {
+        this.types.push(item.value);
+      });
+    },
+
+    getFoundationDocuments(){
+      let temp_data = JSON.parse(localStorage.getItem("foundation-documents"));
+      temp_data.forEach((item) => {
+        this.foundation_documents.push(item.value);
+      });
+    },
+
+    getFieldActivities(){
+      let temp_data = JSON.parse(localStorage.getItem("field-activities"));
+      temp_data.forEach((item) => {
+        this.field_activities.push(item.value);
+      });
     },
   },
 
   mounted() {
     this.getOrganisation();
-    this.getFoundationDocument();
+    this.getOrgNames();
+    this.getOrgTypes();
+    this.getFoundationDocuments();
+    this.getFieldActivities();
+
   },
 };
 
