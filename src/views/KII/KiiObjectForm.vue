@@ -66,6 +66,16 @@
 
 
           <h4 @click="electro_info_open = !electro_info_open">+ Сведения о взаимодействии объекта КИИ и сетей электросвязи</h4>
+            <TableEditor
+
+                v-bind:fields="electro_fields"
+                v-bind:items="electro_data"
+
+            />
+
+
+
+
             <div class="mb-1" :class="{selectHide: electro_info_open}">
               <label >Категория сети электросвязи или сведения об отсутствии взаимодействия объекта КИИ с сетями электросвязи</label>
               <AdvancedSelect
@@ -273,6 +283,44 @@ export default {
   },
   data() {
     return {
+
+      electro_data: [],
+      electro_fields: [
+        { key: "f1",
+          default:'',
+          label: "Категория сети",
+          class: 'form-control',
+          type: 'text',
+          teg: 'select',
+          options: [ ]
+        },
+        { key: "f2",
+          default:'',
+          label: "Наименование оператора",
+          class: 'form-control',
+          type: 'text',
+          teg: 'input',
+
+        },
+        { key: "f3",
+          default:'',
+          label: "Цель взаимодействия",
+          class: 'form-control',
+          type: 'text',
+          teg: 'select',
+          options: []
+        },
+        { key: "f4",
+          default:'',
+          label: "Способ взаимодействия",
+          class: 'form-control',
+          type: 'text',
+          teg: 'select',
+          options: []
+        },
+
+      ],
+
       basic_info_open: true,
       electro_info_open: true,
       exploiter_info_open: true,
@@ -407,7 +455,7 @@ export default {
       UserService.getKiiObjectElectro().then(
           (response) => {
             this.kii_object_electro = response.data[0];
-            if(this.kii_object_electro.length == 0){
+            if(this.kii_object_electro.length === 0){
               this.kii_object_electro = {}
             }
             this.isKiiElectroRequest = true;
@@ -420,7 +468,7 @@ export default {
       UserService.getKiiObjectExploiter().then(
           (response) => {
             this.kii_object_exploiter = response.data[0];
-            if(this.kii_object_exploiter.length == 0){
+            if(this.kii_object_exploiter.length === 0){
               this.kii_object_exploiter = {}
             }
             this.isKiiObjectExploiterRequest = true;
@@ -457,7 +505,7 @@ export default {
       if(this.kii_object_electro.id){
         UserService.updateKiiObjectElectro(this.kii_object_electro).then(
             (response) => {
-              console.log('123');
+              console.log(response);
             },
             (error) => {console.log(error);}
         );
@@ -466,7 +514,7 @@ export default {
         this.kii_object_electro.kii = this.kii_object.id;
         UserService.addKiiObjectElectro(this.kii_object_electro).then(
             (response) => {
-               console.log('123');
+               console.log(response);
             },
             (error) => {console.log(error);}
         );
@@ -477,7 +525,7 @@ export default {
       if(this.kii_object_exploiter.id){
         UserService.updateKiiObjectExploiter(this.kii_object_exploiter).then(
             (response) => {
-              console.log('123');
+              console.log(response);
             },
             (error) => {console.log(error);}
         );
@@ -486,7 +534,7 @@ export default {
         this.kii_object_exploiter.kii = this.kii_object.id;
         UserService.addKiiObjectExploiter(this.kii_object_exploiter).then(
             (response) => {
-              console.log('123');
+              console.log(response);
             },
             (error) => {console.log(error);}
         );
@@ -511,7 +559,15 @@ export default {
       let temp_data = JSON.parse(localStorage.getItem("electro-categories"))
       for (var key in temp_data) {
           this.kii_electro_categories.push(temp_data[key].value);
+          // test
+          this.electro_fields[0].options.push(
+            {
+              select_name: temp_data[key].value,
+                id: temp_data[key].id
+            }
+        );
       }
+
     },
 
     getKiiElectroPurposes(){
@@ -532,6 +588,13 @@ export default {
         let temp_data = JSON.parse(localStorage.getItem("electro-protocols"))
         for (var key in temp_data) {
           this.kii_electro_protocols.push(temp_data[key].value);
+          // test
+          this.electro_fields[3].options.push(
+              {
+                select_name: temp_data[key].value,
+                id: temp_data[key].id
+              }
+          );
         }
     },
 
