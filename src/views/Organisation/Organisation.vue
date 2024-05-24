@@ -6,14 +6,19 @@
             <div class="mb-1">
               <label for="username">Полное наименование</label>
               <div class="input-group">
-                <input type="text" class="form-control" id="full_name" required=""  v-model="organisation.full_name">
+                <WordForms
+                    v-bind:inputText = "organisation.full_name"
+                    v-bind:showForms = "fullNameForms"
+                    @saveWordForms="saveFullName"
+                />
               </div>
             </div>
             <div class="mb-1" >
               <label for="username">Сокращенное наименование</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="short_name" v-model="organisation.short_name">
-              </div>
+              <WordForms
+                  v-bind:inputText="organisation.short_name"
+                  v-bind:showForms = fullNameForms
+              />
             </div>
             <div class="row mb-1" >
               <div class="col-md-6 ">
@@ -118,33 +123,39 @@
 
 <script>
 import UserService from "../../services/organisation.service";
-
+import WordForms from "../../components/WordForms.vue";
 export default {
   name: "organisation",
+
+  components: {
+    WordForms
+  },
+
   data() {
     return {
       isOrganisatonRequest: false,
+      fullNameForms: ['s_ip', 's_rp'],
       organisation: {},
       names: [],
       types: [],
       foundation_documents: [],
       field_activities: [],
-
     };
   },
+
   methods: {
+
     submit() {
       UserService.patchOrganisation(this.organisation).then(
-          (response) => {
-            this.organisations = response.data;
-          },
+          (response) => {this.organisations = response.data;},
           (error) => {console.log(error);}
       );
     },
-
+    saveFullName(wordForms){
+      this.organisation.full_name=wordForms
+    },
     getOrganisation(){
-      let organisation = localStorage.getItem("organisation");
-      UserService.getOrganisation(organisation).then(
+      UserService.getOrganisation(localStorage.getItem("organisation")).then(
           (response) => {
             this.organisation = response.data;
             this.isOrganisatonRequest = true;
@@ -153,33 +164,31 @@ export default {
       );
     },
 
+    getWordsForm(){
+      UserService.getWordForms({word: this.organisation.full_name}).then(
+          (response) => {this.organisation.full_name = response.data},
+          (error) => {console.log(error);}
+      );
+    },
+
     getOrgNames(){
       let temp_data = JSON.parse(localStorage.getItem("org-names"));
-
-      temp_data.forEach((item) => {
-        this.names.push(item.value);
-      });
+      temp_data.forEach((item) => {this.names.push(item.value);});
     },
 
     getOrgTypes(){
       let temp_data = JSON.parse(localStorage.getItem("org-types"));
-      temp_data.forEach((item) => {
-        this.types.push(item.value);
-      });
+      temp_data.forEach((item) => {this.types.push(item.value);});
     },
 
     getFoundationDocuments(){
       let temp_data = JSON.parse(localStorage.getItem("foundation-documents"));
-      temp_data.forEach((item) => {
-        this.foundation_documents.push(item.value);
-      });
+      temp_data.forEach((item) => {this.foundation_documents.push(item.value);});
     },
 
     getFieldActivities(){
       let temp_data = JSON.parse(localStorage.getItem("field-activities"));
-      temp_data.forEach((item) => {
-        this.field_activities.push(item.value);
-      });
+      temp_data.forEach((item) => {this.field_activities.push(item.value);});
     },
   },
 
@@ -189,8 +198,8 @@ export default {
     this.getOrgTypes();
     this.getFoundationDocuments();
     this.getFieldActivities();
-
   },
+
 };
 
 </script>

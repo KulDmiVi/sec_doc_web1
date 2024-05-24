@@ -43,10 +43,28 @@ export default {
   },
 
   methods: {
+
+    getPosts(){
+      OrganisationService.getPosts().then(
+          (response) => {
+            this.posts = response.data;
+            this.isPostRequest = true;
+          },
+          (error) => {console.log(error);}
+      );
+    },
+
     addPost(data){
       data['organisation'] = JSON.parse(localStorage.getItem("user"))
       OrganisationService.postPost(data).then(
           (response) => {this.request = response.data;},
+          (error) => {console.log(error);}
+      );
+    },
+
+    deletePost(data){
+      OrganisationService.deletePost(data.id).then(
+          (response) => {console.log(response);},
           (error) => {console.log(error);}
       );
     },
@@ -73,23 +91,6 @@ export default {
           (error) => {console.log(error);}
       );
     },
-
-    getPosts(){
-      OrganisationService.getPosts().then(
-          (response) => {
-            this.posts = response.data;
-            this.isPostRequest = true;
-          },
-          (error) => {console.log(error);}
-      );
-    },
-
-  deletePost(data){
-    OrganisationService.deletePost(data.id).then(
-        (response) => {console.log(response);},
-        (error) => {console.log(error);}
-    );
-  },
 },
 
   mounted(){

@@ -10,8 +10,8 @@ export default class RefBooks {
             'responsibilities',
             'treasures',
             'commission-types',
-            'org-types',
             'foundation-documents',
+            'storages',
             'inn-types',
             'org-names',
             'org-types',
@@ -19,7 +19,6 @@ export default class RefBooks {
             'security-threats',
         ]
         for (index = 0; index < this.refBooks.length; index++) {
-            console.log(this.refBooks[index]);
             let refName = this.refBooks[index]
             this.getRefBook(refName).then(
                 (response) => {

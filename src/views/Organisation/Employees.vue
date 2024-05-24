@@ -27,6 +27,7 @@ export default {
         { key: "post", label: "Должность",
           class: 'form-control', type: 'text',
           teg: 'select',  options: [] },
+
         { key: "department", label: "Подразделение",
           class: 'form-control', type: 'text',
           teg: 'select', options: [] },
@@ -108,8 +109,7 @@ export default {
             this.fields.forEach((element) => {
               if(element["key"] === "post"){
                 element['options'] = posts
-                console.log(element['options'])
-              }
+                  }
             });
             this.isPostRequest = true
           },

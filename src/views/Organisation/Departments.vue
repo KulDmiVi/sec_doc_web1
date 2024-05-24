@@ -52,27 +52,21 @@ export default {
       let current_user = JSON.parse(localStorage.getItem("user"))
       data["organisation"] = current_user.organisation
       OrganisationService.postDepartment(current_user.organisation, data).then(
-          (response) => {
-            this.request = response.data;
-          },
+          (response) => {this.request = response.data;},
           (error) => {console.log(error);}
       );
     },
 
     updateDepartment(data){
       OrganisationService.patchDepartment(data).then(
-          (response) => {
-            this.request = response.data;
-          },
+          (response) => {this.request = response.data;},
           (error) => {console.log(error);}
       );
     },
 
     deleteDepartment(data){
     OrganisationService.deleteDepartment(data.id).then(
-        (response) => {
-          this.request = response.data;
-        },
+        (response) => {this.request = response.data;},
         (error) => {console.log(error);}
     );
   },

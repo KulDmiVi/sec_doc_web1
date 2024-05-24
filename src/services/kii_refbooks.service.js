@@ -26,7 +26,6 @@ export default class RefBooksKii {
             let refName = this.refBooks[index]
             this.getRefBook(refName).then(
                 (response) => {
-
                     localStorage.setItem(refName, JSON.stringify(response.data));
                 },
                 (error) => { console.log(error)}

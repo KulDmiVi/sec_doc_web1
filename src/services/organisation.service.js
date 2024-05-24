@@ -115,7 +115,7 @@ class OrganisationService {
   postResponsibilities(data){
         return api.post('/responsibilities/', data);
   };
-  postCommission(data){
+  postCommissions(data){
         return api.post('/commissions/', data)
     };
 
@@ -171,7 +171,10 @@ class OrganisationService {
         return api.post('/kii/exploiters/', data);
     };
 
-
+    async getWordForms(data){
+        let response = await api.post('/word_forms/search/', data);
+        return response
+    };
 }
 
 export default new OrganisationService();

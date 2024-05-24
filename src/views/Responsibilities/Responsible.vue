@@ -1,21 +1,58 @@
 <template>
   <h4  v-if="typeRequest"> {{item_type.value}}</h4>
-  <table v-if="responsibilitiesRequest">
-    <tr>
-      <th>Тип</th>
-      <th>Информационная система персональных данных</th>
-      <th>Ответственный</th>
-      <th>Заместитель отвественного</th>
-      <th>Подразделение</th>
-    </tr>
-    <tr v-for="resp in responsibilities">
-      <td>{{resp.responsible_type}}</td>
-      <td>{{resp.ISPDn}}</td>
-      <td>{{resp.employee}}</td>
-      <td>{{resp.deputy_employee}}</td>
-      <td>{{resp.department}}</td>
-    </tr>
-  </table>
+
+  <input type="radio"  v-model="responseType" value="employee" v-on:change="modifyTypeResponse('employee') "/>
+  <label> Отвественный</label><br>
+
+  <input type="radio"   v-model="responseType" value="deputy_employee"  v-on:change="modifyTypeResponse('deputy_employee')"/>
+  <label> Заместитель</label><br>
+
+  <input type="radio"  v-model="responseType" value="department" v-on:change="modifyTypeResponse('department')"/>
+  <label> Подразделение</label><br>
+
+  <input type="radio"   v-model="responseType" value="isppdn"   v-on:change="modifyTypeResponse('isppdn')"/>
+  <label> На сотрудников, чьи полномочия ограничены конкретной ИСПДн</label><br>
+
+
+
+  <div class="col-md-10 order-md-1">
+    <div class="mb-1" v-show="responseTypes['employee']">
+      <select
+              class="form-select"
+              v-model="employe"
+      >
+        <option v-for = 'emp in employees' v-bind:value="emp.id" >{{emp.select_name}}</option>
+      </select>
+
+    </div>
+
+    <div class="mb-1" v-show="responseTypes['deputy_employee']" >
+      <label for="username">Заместитель отвественного</label>
+      <select
+          class="form-select"
+          v-model="deputy_employee"
+      >
+        <option v-for = 'emp in employees' v-bind:value="emp.id" >{{emp.select_name}}</option>
+      </select>
+    </div>
+
+    <div class="mb-1" v-show="responseTypes['department']">
+      <label for="username">Структурное подразделение</label>
+      <select
+          class="form-select"
+          v-model="department"
+      >
+        <option v-for = 'dep in departments' v-bind:value="dep.id" >{{dep.select_name}}</option>
+      </select>
+    </div>
+
+    <div class="mb-1" v-show="responseTypes['isppdn']">
+      <label for="username" >ИСПДн</label>
+      <div class="input-group">
+        <input type="text" class="form-control" id="short_name">
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -26,11 +63,27 @@ export default {
   name: "commission",
   data() {
     return {
+      responseType: "employee",
+      responseTypes: {
+        employee: true,
+        deputy_employee: false,
+        department: false,
+        isppdn: false,
+    },
+      employe: '',
+      deputy_employee: '',
+      typeRessponseCheked:[],
+
       employees: [],
+      departments: [],
+
       responsibilities: [],
       item_type: {},
+
       responsibilitiesRequest: false,
-      typeRequest: false
+      typeRequest: false,
+      departmentRequest: false,
+      isEmployeeRequest: false,
     };
   },
 
@@ -40,6 +93,35 @@ export default {
   },
 
   methods: {
+
+    modifyTypeResponse(type) {
+      switch(type) {
+        case  "employee":
+          this.responseTypes['employee'] = true;
+          this.responseTypes['deputy_employee'] = false;
+          this.responseTypes['department'] = false;
+          this.responseTypes['isppdn'] = false;
+          break;
+        case  "deputy_employee":
+          this.responseTypes['employee'] = false;
+          this.responseTypes['deputy_employee'] = true;
+          this.responseTypes['department'] = false;
+          this.responseTypes['isppdn'] = false;
+          break;
+        case  "department":
+          this.responseTypes['employee'] = false;
+          this.responseTypes['deputy_employee'] = false;
+          this.responseTypes['department'] = true;
+          this.responseTypes['isppdn'] = false;
+          break;
+        case  "isppdn":
+          this.responseTypes['employee'] = true;
+          this.responseTypes['deputy_employee'] = false;
+          this.responseTypes['department'] = false;
+          this.responseTypes['isppdn'] = true;
+          break;
+      }
+    },
 
     getResponsibilitiesTypes() {
       OrganisationService.getRbResponsibilities().then(
@@ -90,12 +172,32 @@ export default {
           }
       );
     },
+
+    getDepartments(){
+      OrganisationService.getDepartments().then(
+          (response) => {
+              response.data.forEach((item) => {
+              this.departments.push(
+                  {
+                    id: item.id,
+                    select_name: item.name
+                  }
+              );
+            });
+            this.isDepartmentRequest = true;
+
+          },
+          (error) => {console.log(error);}
+      );
+    },
   },
 
   mounted() {
     this.getResponsibilities();
     this.getResponsibilitiesTypes();
     this.getEmployees();
+    this.getDepartments()
+
   },
 };
 

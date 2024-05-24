@@ -8,7 +8,7 @@
       v-bind:enableEditForm=true
       @changeCheck1="changeSelectedDamage1"
       @showForm="showEditForm"
-      @saveRow="addKiiObject"
+      @saveRow="saveObject"
       @updateRow="updateKiiObject"
       @deleteRow="deleteKiiObject"
   />
@@ -48,11 +48,20 @@ export default {
     },
 
     showEditForm(row_id){
-      router.push({ path: '/kii_object/'+this.KiiObjectsData[row_id].uid  })
+      console.log(row_id);
+      if(row_id){
+
+        router.push({ path: '/kii_object/'+this.KiiObjectsData[row_id].uid  })
+      }
+      else{
+
+        router.push({ path: '/kii_object/+null'})
+      }
     },
     getKiiRefBooks(){
       new RefBooksKii()
     },
+
     getKiiObjects() {
       OrganisationService.getKiiObjects()
           .then(response => {
@@ -71,9 +80,16 @@ export default {
           .catch(error => {console.log(error);}
           );
     },
-    addKiiObject(){   },
-    updateKiiObject(){    },
-    deleteKiiObject(){    },
+
+    saveObject(){
+           console.log('Add Kii Object')
+    },
+    updateKiiObject(){
+
+    },
+    deleteKiiObject(){
+
+    },
   },
 
 

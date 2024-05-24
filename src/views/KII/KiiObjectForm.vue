@@ -62,19 +62,11 @@
               </div>
             </div>
 
-
-
-
           <h4 @click="electro_info_open = !electro_info_open">+ Сведения о взаимодействии объекта КИИ и сетей электросвязи</h4>
             <TableEditor
-
                 v-bind:fields="electro_fields"
                 v-bind:items="electro_data"
-
             />
-
-
-
 
             <div class="mb-1" :class="{selectHide: electro_info_open}">
               <label >Категория сети электросвязи или сведения об отсутствии взаимодействия объекта КИИ с сетями электросвязи</label>
@@ -337,7 +329,7 @@ export default {
       isKiiObjectExploiterRequest: false,
 
 
-      os_value: [   ],
+      os_value: [],
       os_options: [
           { name: 'Windows71', code: 'Windows7' },
           { name: 'CentOS1', code: 'CentOS' },
@@ -349,7 +341,11 @@ export default {
       software_options: [],
 
 
-      kii_object: {}, // объект кии
+      kii_object: {
+        purpose: "",
+        type: "",
+        name: "",
+      }, // объект кии
       kii_process: {}, // критический процесс
       kii_process_incident_damages: {}, //
       kii_object_electro: {},
@@ -425,13 +421,13 @@ export default {
 
     getKiiObject(){
       /* Получение данных об объекте КИИ */
-      UserService.getKiiObject(this.$route.params.uid).then(
-          (response) => {
-            this.kii_object = response.data;
-            this.isKiiRequest = true;
-          },
-          (error) => {console.log(error);}
-      );
+      // UserService.getKiiObject(this.$route.params.uid).then(
+      //     (response) => {
+      //       this.kii_object = response.data;
+      //       this.isKiiRequest = true;
+      //     },
+      //     (error) => {console.log(error);}
+      // );
     },
 
     showKiiProcessEditForm() {
@@ -613,7 +609,6 @@ export default {
   },
 
   mounted() {
-
     this.getKiitypes();
     this.getKiiProcess();
     this.getKiiFieldActivities();
@@ -626,7 +621,6 @@ export default {
     this.getKiiObject();
     this.getKiiObjectExploiter();
     this.getKiiIncidentDamages();
-
   },
 };
 

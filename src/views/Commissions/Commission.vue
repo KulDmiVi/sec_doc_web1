@@ -51,7 +51,8 @@ export default {
       commission_uid: null,
       commissionType: null,
       isMembersRequest: false,
-      isEmployeeRequest: false
+      isEmployeeRequest: false,
+      commissionUsed: false,
     };
   },
 
@@ -60,6 +61,7 @@ export default {
   },
 
   methods: {
+
     getEmployees() {
       OrganisationService.getEmployees().then(
           (response) => {
@@ -76,12 +78,11 @@ export default {
           (error) => {console.log(error);}
       );
     },
-    getCommissionMembers() {
 
+    getCommissionMembers() {
       this.commissionsMembers = [];
       OrganisationService.getCommissionMembers().then(
           (response) => {
-
             response.data.forEach((item) =>{
               if (item.commission === this.commission_uid){
                        this.commissionsMembers.push(item)
@@ -99,7 +100,6 @@ export default {
     },
 
     updateCommissionMember(data) {
-      console.log(data)
       OrganisationService.updateCommissionMember(data).then(
           (response) => {console.log(response)},
           (error) => {console.log(error)}
@@ -117,16 +117,36 @@ export default {
     getCommissions(){
       OrganisationService.getCommissions().then(
           (response) => {
-            console.log(this.$route.params.commission_uid)
-            response.data.forEach((item) => {
-              if (item.commission_type === this.$route.params.commission_uid){
-                this.commission_uid = item.id
-                this.getCommissionMembers();
+            console.log(response.data)
+            if (response.data.length!==0) {
+
+              response.data.forEach((item) => {
+                if (item.commission_type === this.$route.params.commission_uid) {
+                  this.commission_uid = item.id
+                  this.getCommissionMembers();
+                  this.commissionUsed = true
+                }
+
+              })
+              if(!this.commissionUsed){
+                this.addCommission()
               }
-            })
+            }
+            else{
+                  console.log("?????")
+                  this.addCommission()
+
+            }
 
 
-          },
+            },
+          (error) => {console.log(error);}
+      );
+    },
+
+    addCommission(){
+      OrganisationService.postCommissions({commission_type: this.$route.params.commission_uid}).then(
+          (response) => {console.log('good');},
           (error) => {console.log(error);}
       );
     }
